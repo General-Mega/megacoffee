@@ -35,17 +35,20 @@ public class HttpInterceptor implements HandlerInterceptor {
         List<MenuVO> menus = (List<MenuVO>) session.getAttribute("menus");
         UserVO user = (UserVO) session.getAttribute("user");
 
+        String requestURI = request.getRequestURI();
+
         logger.info("Menu : " + menus);
         logger.info("User : " + user);
-        String requestURI = request.getRequestURI();
         logger.info("Request URI : " + requestURI);
 
+        MenuVO currentMenu = null;
         if (menus != null) {
-
+            List<MenuVO> filteredMenus = menus.stream().filter(menu -> menu.getUrl() != null && requestURI.contains(menu.getUrl())).toList();
+            if(filteredMenus.size() > 0) {
+                currentMenu = filteredMenus.get(0);
+            }
         }
-
-        logger.info("HTTP 요청 URI: " + request.getRequestURI());
-        logger.info("HTTP 요청 URL: " + request.getRequestURL());
+        session.setAttribute("menu", currentMenu);
     }
 
     @Override

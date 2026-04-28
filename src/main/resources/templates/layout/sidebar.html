@@ -1,16 +1,9 @@
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar(activePage)">
     <aside class="sidebar">
-        <th:block th:each="depth1 : ${session.menus}">
-            <a th:href="${depth1.url}">
-                <div class="sidebar-title" th:text="${depth1.name}"></div>
-            </a>
-            <ul class="sidebar-menu">
-                <th:block th:if="${depth1.children != null && #lists.size(depth1.children) > 0}">
-                    <li th:each="depth2 : ${depth1.children}">
-                        <a th:href="${depth2.url}" th:text="${depth2.name}"></a>
-                    </li>
-                </th:block>
-            </ul>
-        </th:block>
+        <ul class="sidebar-menu">
+            <li th:each="child : ${session.menu.children}">
+                <a th:href="${child.url}" th:text="${child.name}"></a>
+            </li>
+        </ul>
     </aside>
 </div>

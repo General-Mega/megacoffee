@@ -112,10 +112,11 @@
 </head>
 <body>
     <div th:replace="layout/header :: header('dashboard')"></div>
-    
     <!-- ========== 메인 컨테이너 ========== -->
     <div class="main-container">
+        <th:block th:if="${session.menu.children != null && #lists.size(session.menu.children) > 0}">
         <aside th:replace="layout/sidebar :: sidebar('dashboard')"></aside>
+        </th:block>
 
         <!-- ========== 메인 콘텐츠 영역 ========== -->
         <main class="content">

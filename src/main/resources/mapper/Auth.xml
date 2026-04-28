@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.megacoffee.modules.system.auth.AuthRepository">
+
+  <select id="list" resultType="com.megacoffee.modules.system.auth.AuthVO" parameterType="com.megacoffee.model.SearchVO">
+    SELECT
+      SEQ,
+      NAME,
+      SORTING,
+      CREATE_IDX,
+      CREATE_DATETIME,
+      UPDATE_IDX,
+      UPDATE_DATETIME,
+      DELETE_IDX,
+      DELETE_DATETIME,
+      DELETED
+    FROM TB_AUTH
+    WHERE DELETED = 0
+    <if test="searchValue != null and searchValue != ''">
+      AND NAME LIKE CONCAT('%', #{searchValue}, '%')
+    </if>
+    ORDER BY SORTING, SEQ
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
+  <select id="count" resultType="int" parameterType="com.megacoffee.model.SearchVO">
+    SELECT COUNT(1)
+    FROM TB_AUTH
+    WHERE DELETED = 0
+    <if test="searchValue != null and searchValue != ''">
+      AND NAME LIKE CONCAT('%', #{searchValue}, '%')
+    </if>
+  </select>
+
+  <select id="item" resultType="com.megacoffee.modules.system.auth.AuthVO" parameterType="int">
+    SELECT
+      SEQ,
+      NAME,
+      SORTING,
+      CREATE_IDX,
+      CREATE_DATETIME,
+      UPDATE_IDX,
+      UPDATE_DATETIME,
+      DELETE_IDX,
+      DELETE_DATETIME,
+      DELETED
+    FROM TB_AUTH
+    WHERE SEQ = #{seq}
+      AND DELETED = 0
+  </select>
+
+  <insert id="append" parameterType="com.megacoffee.modules.system.auth.AuthVO">
+    INSERT INTO TB_AUTH (NAME, SORTING, CREATE_IDX, CREATE_DATETIME, DELETED)
+    VALUES (#{name}, #{sorting}, #{createIdx}, NOW(), 0)
+  </insert>
+
+  <update id="modify" parameterType="com.megacoffee.modules.system.auth.AuthVO">
+    UPDATE TB_AUTH
+    SET NAME = #{name},
+        SORTING = #{sorting},
+        UPDATE_IDX = #{updateIdx},
+        UPDATE_DATETIME = NOW()
+    WHERE SEQ = #{seq}
+  </update>
+
+  <update id="remove" parameterType="map">
+    UPDATE TB_AUTH
+    SET DELETED = 1,
+        DELETE_IDX = #{deleteIdx},
+        DELETE_DATETIME = NOW()
+    WHERE SEQ IN
+    <foreach item="seq" collection="seqList" open="(" separator="," close=")">
+      #{seq}
+    </foreach>
+  </update>
+</mapper>
