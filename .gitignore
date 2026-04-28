@@ -1,0 +1,13 @@
+# Maven build output
+/target/
+
+# IntelliJ / VS Code artifacts
+*.iml
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+
+# Logs and temporary files
+*.log
