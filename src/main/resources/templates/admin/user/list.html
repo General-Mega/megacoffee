@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 관리</title>
+    <link rel="stylesheet" href="/css/admin-layout.css">
+</head>
+<body>
+    <div th:replace="layout/header :: header('user')"></div>
+
+    <!-- ========== 메인 컨테이너 ========== -->
+    <div class="main-container">
+        <aside th:replace="layout/sidebar :: sidebar('userList')"></aside>
+
+        <!-- ========== 메인 콘텐츠 영역 ========== -->
+        <main class="content">
+            <!-- 콘텐츠 헤더 -->
+            <div class="content-header">
+                <h1>사용자 관리</h1>
+                <p>시스템의 모든 사용자를 관리합니다.</p>
+            </div>
+
+            <!-- 검색 섹션 -->
+            <div class="search-section">
+                <form method="get" action="/admin/user/list" class="search-form">
+                    <select name="searchType">
+                        <option value="">-- 검색 유형 --</option>
+                        <option value="userId" th:selected="${searchType} == 'userId'">아이디</option>
+                        <option value="seq" th:selected="${searchType} == 'seq'">번호</option>
+                    </select>
+                    <input type="text" name="searchValue" placeholder="검색어 입력" th:value="${searchValue}">
+                    <button type="submit">🔍 검색</button>
+                    <button type="button" class="reset" onclick="document.location='/admin/user/list'">초기화</button>
+                </form>
+            </div>
+
+            <!-- 데이터 테이블 -->
+            <div class="table-container" th:if="${userList != null and userList.size() > 0}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">번호</th>
+                            <th style="width: 25%;">아이디</th>
+                            <th style="width: 20%;">비밀번호 초기화</th>
+                            <th style="width: 25%;">마지막 로그인</th>
+                            <th style="width: 20%;">작업</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${userList}">
+                            <td th:text="${user.seq}"></td>
+                            <td th:text="${user.userId}"></td>
+                            <td>
+                                <span th:if="${user.passwordReset}" style="color: #e74c3c; font-weight: bold;">⚠️ 필요</span>
+                                <span th:unless="${user.passwordReset}" style="color: #27ae60;">✓ 완료</span>
+                            </td>
+                            <td th:text="${#dates.format(user.lastLoginDatetime, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-primary" th:href="'/admin/user/edit/' + ${user.seq}">수정</a>
+                                    <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('삭제하시겠습니까?');" th:href="'/admin/user/delete/' + ${user.seq}">삭제</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 데이터 없음 메시지 -->
+            <div class="empty-message" th:if="${userList == null or userList.size() == 0}">
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <!-- 페이징 -->
+            <div class="pagination" th:if="${userList != null and userList.size() > 0}">
+                <span th:if="${page > 1}">
+                    <a href="#" th:href="'/admin/user/list?page=1' + (${searchType} ? '&searchType=' + ${searchType} : '') + (${searchValue} ? '&searchValue=' + ${searchValue} : '')">« 처음</a>
+                </span>
+                <span th:if="${page <= 1}" class="disabled">« 처음</span>
+
+                <span th:if="${page > 1}">
+                    <a href="#" th:href="'/admin/user/list?page=' + ${page - 1} + (${searchType} ? '&searchType=' + ${searchType} : '') + (${searchValue} ? '&searchValue=' + ${searchValue} : '')">‹ 이전</a>
+                </span>
+                <span th:if="${page <= 1}" class="disabled">‹ 이전</span>
+
+                <span class="current" th:text="${page}"></span>
+
+                <span th:if="${hasNext}">
+                    <a href="#" th:href="'/admin/user/list?page=' + ${page + 1} + (${searchType} ? '&searchType=' + ${searchType} : '') + (${searchValue} ? '&searchValue=' + ${searchValue} : '')">다음 ›</a>
+                </span>
+                <span th:unless="${hasNext}" class="disabled">다음 ›</span>
+
+                <span th:if="${hasNext}">
+                    <a href="#" th:href="'/admin/user/list?page=' + ${totalPages} + (${searchType} ? '&searchType=' + ${searchType} : '') + (${searchValue} ? '&searchValue=' + ${searchValue} : '')">마지막 »</a>
+                </span>
+                <span th:unless="${hasNext}" class="disabled">마지막 »</span>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="layout/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출퇴근 관리</title>
+    <link rel="stylesheet" href="/css/admin-layout.css">
+    <style>
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .date-filter input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .commute-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-on {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-off {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="layout/header :: header('member')"></div>
+
+    <!-- ========== 메인 컨테이너 ========== -->
+    <div class="main-container">
+        <aside th:replace="layout/sidebar :: sidebar('memberCommute')"></aside>
+
+        <!-- ========== 메인 콘텐츠 영역 ========== -->
+        <main class="content">
+            <!-- 콘텐츠 헤더 -->
+            <div class="content-header">
+                <h1>출퇴근 관리</h1>
+                <p>회원들의 출퇴근 현황을 관리하고 조회합니다.</p>
+            </div>
+
+            <!-- 날짜 필터 -->
+            <div class="search-section">
+                <form method="get" action="/admin/member/commute" class="search-form">
+                    <input type="date" name="startDate" th:value="${startDate}">
+                    <span style="color: #999;">~</span>
+                    <input type="date" name="endDate" th:value="${endDate}">
+                    <select name="status">
+                        <option value="">-- 상태 --</option>
+                        <option value="ON" th:selected="${status} == 'ON'">출근</option>
+                        <option value="OFF" th:selected="${status} == 'OFF'">퇴근</option>
+                    </select>
+                    <button type="submit">🔍 조회</button>
+                    <button type="button" class="reset" onclick="document.location='/admin/member/commute'">초기화</button>
+                </form>
+            </div>
+
+            <!-- 데이터 테이블 -->
+            <div class="table-container" th:if="${commuteList != null and commuteList.size() > 0}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">번호</th>
+                            <th style="width: 20%;">회원명</th>
+                            <th style="width: 18%;">출근 시간</th>
+                            <th style="width: 18%;">퇴근 시간</th>
+                            <th style="width: 15%;">근무 시간</th>
+                            <th style="width: 15%;">상태</th>
+                            <th style="width: 6%;">작업</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="commute : ${commuteList}">
+                            <td th:text="${commute.seq}"></td>
+                            <td th:text="${commute.memberName}"></td>
+                            <td th:text="${#dates.format(commute.checkInTime, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td th:text="${commute.checkOutTime != null ? #dates.format(commute.checkOutTime, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+                            <td th:text="${commute.workingHours}"></td>
+                            <td>
+                                <span th:if="${commute.status == 'ON'}" class="commute-status status-on">🟢 출근</span>
+                                <span th:if="${commute.status == 'OFF'}" class="commute-status status-off">🔴 퇴근</span>
+                                <span th:if="${commute.status == 'PENDING'}" class="commute-status status-pending">🟡 대기</span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-secondary" th:href="'/admin/member/commute/detail/' + ${commute.seq}">상세</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 데이터 없음 메시지 -->
+            <div class="empty-message" th:if="${commuteList == null or commuteList.size() == 0}">
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <!-- 페이징 -->
+            <div class="pagination" th:if="${commuteList != null and commuteList.size() > 0}">
+                <span th:if="${page > 1}">
+                    <a href="#" th:href="'/admin/member/commute?page=1'">« 처음</a>
+                </span>
+                <span th:if="${page <= 1}" class="disabled">« 처음</span>
+
+                <span th:if="${page > 1}">
+                    <a href="#" th:href="'/admin/member/commute?page=' + ${page - 1}">‹ 이전</a>
+                </span>
+                <span th:if="${page <= 1}" class="disabled">‹ 이전</span>
+
+                <span class="current" th:text="${page}"></span>
+
+                <span th:if="${hasNext}">
+                    <a href="#" th:href="'/admin/member/commute?page=' + ${page + 1}">다음 ›</a>
+                </span>
+                <span th:unless="${hasNext}" class="disabled">다음 ›</span>
+
+                <span th:if="${hasNext}">
+                    <a href="#" th:href="'/admin/member/commute?page=' + ${totalPages}">마지막 »</a>
+                </span>
+                <span th:unless="${hasNext}" class="disabled">마지막 »</span>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="layout/footer :: footer"></div>
+</body>
+</html>

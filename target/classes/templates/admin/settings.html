@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설정</title>
+    <link rel="stylesheet" href="/css/admin-layout.css">
+    <style>
+        .settings-form {
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-group .help-text {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .settings-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .settings-tabs button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .settings-tabs button:hover {
+            color: #333;
+        }
+
+        .settings-tabs button.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="layout/header :: header('settings')"></div>
+
+    <!-- ========== 메인 컨테이너 ========== -->
+    <div class="main-container">
+        <aside th:replace="layout/sidebar :: sidebar('settings')"></aside>
+
+        <!-- ========== 메인 콘텐츠 영역 ========== -->
+        <main class="content">
+            <!-- 콘텐츠 헤더 -->
+            <div class="content-header">
+                <h1>설정</h1>
+                <p>시스템 전체 설정을 관리합니다.</p>
+            </div>
+
+            <!-- 탭 메뉴 -->
+            <div class="settings-tabs">
+                <button class="active" onclick="switchTab('general')">⚙️ 일반 설정</button>
+                <button onclick="switchTab('security')">🔒 보안 설정</button>
+                <button onclick="switchTab('email')">📧 이메일 설정</button>
+                <button onclick="switchTab('backup')">💾 백업 설정</button>
+            </div>
+
+            <!-- 일반 설정 탭 -->
+            <div id="general" class="tab-content active">
+                <form class="settings-form">
+                    <div class="form-group">
+                        <label>시스템 이름</label>
+                        <input type="text" placeholder="MegaCoffee Management System" value="MegaCoffee Management System">
+                        <div class="help-text">시스템의 표시 이름입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>시스템 설명</label>
+                        <textarea placeholder="시스템 설명을 입력하세요"></textarea>
+                        <div class="help-text">시스템에 대한 설명입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>페이지당 항목 수</label>
+                        <input type="number" placeholder="20" value="20">
+                        <div class="help-text">목록 페이지에 표시될 항목의 수입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>언어</label>
+                        <select>
+                            <option selected>한국어</option>
+                            <option>English</option>
+                            <option>日本語</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 저장</button>
+                        <button type="reset" class="btn btn-secondary">취소</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 보안 설정 탭 -->
+            <div id="security" class="tab-content">
+                <form class="settings-form">
+                    <div class="form-group">
+                        <label>비밀번호 최소 길이</label>
+                        <input type="number" placeholder="8" value="8">
+                        <div class="help-text">사용자 비밀번호의 최소 길이입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>비밀번호 만료 일수</label>
+                        <input type="number" placeholder="90" value="90">
+                        <div class="help-text">비밀번호 변경을 요구할 일수입니다. (0 = 미사용)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>세션 타임아웃 (분)</label>
+                        <input type="number" placeholder="30" value="30">
+                        <div class="help-text">사용자 세션이 만료되는 시간입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>로그인 시도 제한</label>
+                        <input type="number" placeholder="5" value="5">
+                        <div class="help-text">계정 잠금 전 로그인 시도 횟수입니다.</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 저장</button>
+                        <button type="reset" class="btn btn-secondary">취소</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 이메일 설정 탭 -->
+            <div id="email" class="tab-content">
+                <form class="settings-form">
+                    <div class="form-group">
+                        <label>SMTP 서버</label>
+                        <input type="text" placeholder="smtp.gmail.com" value="">
+                        <div class="help-text">이메일 발송에 사용할 SMTP 서버입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>SMTP 포트</label>
+                        <input type="number" placeholder="587" value="">
+                        <div class="help-text">SMTP 서버 포트입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>발신 이메일</label>
+                        <input type="email" placeholder="admin@megacoffee.com" value="">
+                        <div class="help-text">이메일 발송 시 사용할 이메일 주소입니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>발신 이메일 비밀번호</label>
+                        <input type="password" placeholder="비밀번호" value="">
+                        <div class="help-text">발신 이메일 계정의 비밀번호입니다.</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 저장</button>
+                        <button type="button" class="btn btn-secondary">테스트 발송</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 백업 설정 탭 -->
+            <div id="backup" class="tab-content">
+                <form class="settings-form">
+                    <div class="form-group">
+                        <label>자동 백업 활성화</label>
+                        <select>
+                            <option selected>활성화</option>
+                            <option>비활성화</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>백업 주기</label>
+                        <select>
+                            <option>매일</option>
+                            <option selected>주 1회</option>
+                            <option>월 1회</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>백업 시간</label>
+                        <input type="time" value="02:00">
+                        <div class="help-text">매일 이 시간에 자동 백업이 실행됩니다.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>백업 보관 일수</label>
+                        <input type="number" placeholder="30" value="30">
+                        <div class="help-text">백업 파일을 보관할 기간입니다.</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 저장</button>
+                        <button type="button" class="btn btn-success" onclick="alert('지금 백업 중입니다...')">지금 백업</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="layout/footer :: footer"></div>
+
+    <script>
+        function switchTab(tabName) {
+            // 모든 탭 숨기기
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // 모든 버튼 비활성화
+            const buttons = document.querySelectorAll('.settings-tabs button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            // 선택한 탭 표시
+            document.getElementById(tabName).classList.add('active');
+
+            // 선택한 버튼 활성화
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
