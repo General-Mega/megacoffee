@@ -2,20 +2,37 @@ package com.megacoffee.model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class BaseVO {
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createDatetime;
+    private String createUserName;
     private Long createIdx;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime updateDatetime;
+    private String updateUserName;
     private Long updateIdx;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime deleteDatetime;
     private Long deleteIdx;
     private boolean deleted = false;
-    
+
     public LocalDateTime getCreateDatetime() {
         return createDatetime;
     }
     public void setCreateDatetime(LocalDateTime createDatetime) {
         this.createDatetime = createDatetime;
+    }
+    public String getCreateUserName() {
+        return createUserName;
+    }
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
     }
     public Long getCreateIdx() {
         return createIdx;
@@ -28,6 +45,12 @@ public class BaseVO {
     }
     public void setUpdateDatetime(LocalDateTime updateDatetime) {
         this.updateDatetime = updateDatetime;
+    }
+    public String getUpdateUserName() {
+        return updateUserName;
+    }
+    public void setUpdateUserName(String updateUserName) {
+        this.updateUserName = updateUserName;
     }
     public Long getUpdateIdx() {
         return updateIdx;
@@ -53,6 +76,8 @@ public class BaseVO {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+    
+    
 
     
 }

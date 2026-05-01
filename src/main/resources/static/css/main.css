@@ -1,0 +1,26 @@
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.toolbar button { padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer; }
+.toolbar .btn-primary { background: #3498db; color: white; }
+.toolbar .btn-danger { background: #e74c3c; color: white; }
+.search-section { display: flex; gap: 15px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.search-inputs { display: flex; gap: 10px; align-items: center; width: 100%;}
+.search-section .search-type { padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white; cursor: pointer; min-width: 120px; }
+.search-section input[type="text"] { padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 4px; }
+.search-section button { padding: 10px 14px; border: none; border-radius: 4px; background: #2ecc71; color: white; cursor: pointer; white-space: nowrap; }
+.search-section .reset { background: #95a5a6; }
+.table-action-buttons { gap: 6px; display: flex; flex-wrap: wrap; }
+.table-action-buttons button { padding: 6px 10px; border-radius: 4px; border: none; cursor: pointer; }
+.table-action-buttons .btn-edit { background: #2980b9; color: white; }
+.table-action-buttons .btn-delete { background: #c0392b; color: white; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.modal-backdrop.open { display: flex; }
+.modal-backdrop.close { display: none; }
+.modal-dialog { background: white; width: 100%; max-width: 480px; border-radius: 10px; padding: 20px; box-shadow: 0 16px 40px rgba(0,0,0,0.2); }
+.modal-dialog h2 { margin-top: 0; }
+.modal-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.modal-row label { font-weight: 600; }
+.modal-row input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.modal-actions button { min-width: 100px; }
+.modal-actions .btn-secondary { background: #bdc3c7; color: #2c3e50; }
+.modal-actions .btn-submit { background: #27ae60; color: white; }

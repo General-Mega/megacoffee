@@ -3,30 +3,32 @@
 <mapper namespace="com.megacoffee.modules.system.auth.AuthRepository">
 
   <select id="list" resultType="com.megacoffee.modules.system.auth.AuthVO" parameterType="com.megacoffee.model.SearchVO">
-    SELECT
-      SEQ,
-      NAME,
-      SORTING,
-      CREATE_IDX,
-      CREATE_DATETIME,
-      UPDATE_IDX,
-      UPDATE_DATETIME,
-      DELETE_IDX,
-      DELETE_DATETIME,
-      DELETED
-    FROM TB_AUTH
-    WHERE DELETED = 0
+    SELECT 
+      TA.SEQ, TA.NAME, TA.SORTING
+      , TA.CREATE_IDX, CUSER.NAME AS CREATE_USER_NAME, TA.CREATE_DATETIME
+      , TA.UPDATE_IDX, UUSER.NAME AS UPDATE_USER_NAME, TA.UPDATE_DATETIME
+    FROM TB_AUTH AS TA
+      LEFT OUTER JOIN TB_USER AS CUSER 
+        ON CUSER.SEQ = TA.CREATE_IDX
+      LEFT OUTER JOIN TB_USER AS UUSER
+        ON UUSER.SEQ = TA.UPDATE_IDX
+    WHERE 1 = 1
+      AND TA.DELETED = 0
     <if test="searchValue != null and searchValue != ''">
-      AND NAME LIKE CONCAT('%', #{searchValue}, '%')
+      AND TA.NAME LIKE CONCAT('%', #{searchValue}, '%')
     </if>
-    ORDER BY SORTING, SEQ
-    LIMIT #{limit} OFFSET #{offset}
+    ORDER BY TA.SORTING, TA.SEQ
+    LIMIT #{startDataNumber}, #{dataCount}
   </select>
 
-  <select id="count" resultType="int" parameterType="com.megacoffee.model.SearchVO">
-    SELECT COUNT(1)
+  <select id="paging" resultType="com.megacoffee.model.PageVO" parameterType="com.megacoffee.model.SearchVO">
+    SELECT
+			COUNT(1) AS TOTAL_DATA_COUNT
+			, #{page} AS PAGE
+			, #{dataCount} AS DATA_COUNT
     FROM TB_AUTH
-    WHERE DELETED = 0
+    WHERE 1 = 1
+      AND DELETED = 0
     <if test="searchValue != null and searchValue != ''">
       AND NAME LIKE CONCAT('%', #{searchValue}, '%')
     </if>
@@ -34,42 +36,43 @@
 
   <select id="item" resultType="com.megacoffee.modules.system.auth.AuthVO" parameterType="int">
     SELECT
-      SEQ,
-      NAME,
-      SORTING,
-      CREATE_IDX,
-      CREATE_DATETIME,
-      UPDATE_IDX,
-      UPDATE_DATETIME,
-      DELETE_IDX,
-      DELETE_DATETIME,
-      DELETED
+      SEQ, NAME, SORTING
+      , CREATE_IDX, CREATE_DATETIME
+      , UPDATE_IDX, UPDATE_DATETIME
     FROM TB_AUTH
-    WHERE SEQ = #{seq}
+    WHERE 1 = 1
+      AND SEQ = #{seq}
       AND DELETED = 0
   </select>
 
   <insert id="append" parameterType="com.megacoffee.modules.system.auth.AuthVO">
+    <selectKey keyProperty="sorting" resultType="int" order="BEFORE">
+      SELECT IFNULL(MAX(SORTING), 0) + 1 AS SORTING FROM TB_AUTH
+    </selectKey>
     INSERT INTO TB_AUTH (NAME, SORTING, CREATE_IDX, CREATE_DATETIME, DELETED)
     VALUES (#{name}, #{sorting}, #{createIdx}, NOW(), 0)
   </insert>
 
   <update id="modify" parameterType="com.megacoffee.modules.system.auth.AuthVO">
     UPDATE TB_AUTH
-    SET NAME = #{name},
-        SORTING = #{sorting},
-        UPDATE_IDX = #{updateIdx},
-        UPDATE_DATETIME = NOW()
+    SET UPDATE_IDX = #{createIdx},
+        UPDATE_DATETIME = NOW(),
+        <if test="name != null and name != ''">
+        NAME = #{name},
+        </if>
+        <if test="sorting != null">
+        SORTING = #{sorting}
+        </if>
     WHERE SEQ = #{seq}
   </update>
 
-  <update id="remove" parameterType="map">
+  <update id="remove">
     UPDATE TB_AUTH
     SET DELETED = 1,
-        DELETE_IDX = #{deleteIdx},
+        DELETE_IDX = #{createIdx},
         DELETE_DATETIME = NOW()
     WHERE SEQ IN
-    <foreach item="seq" collection="seqList" open="(" separator="," close=")">
+    <foreach item="seq" collection="seqs" open="(" separator="," close=")">
       #{seq}
     </foreach>
   </update>
