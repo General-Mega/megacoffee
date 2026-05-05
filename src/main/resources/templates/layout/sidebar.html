@@ -1,8 +1,11 @@
-<div xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar(activePage)">
+<div th:if="${session.pmenu != null && #lists.size(session.pmenu.children) > 0}" 
+    xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar(activePage)">
     <aside class="sidebar">
         <ul class="sidebar-menu">
-            <li th:each="child : ${session.menu.children}">
-                <a th:href="${child.url}" th:text="${child.name}"></a>
+            <li th:each="child : ${session.pmenu.children}">
+                <a th:href="${child.url}" 
+                    th:text="${child.name}" 
+                    th:classappend="${session.cmenu.seq == child.seq}? 'active' : ''"/>
             </li>
         </ul>
     </aside>

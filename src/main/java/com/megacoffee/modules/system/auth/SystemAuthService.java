@@ -43,26 +43,26 @@ public class SystemAuthService {
 
     /**
      * 권한 등록
-     * @param auth
+     * @param data
      * @param userSeq
      */
-    public int append(SystemAuthVO auth) {
+    public int append(SystemAuthVO data) {
         Long createIdx = Security.idx();
-        auth.setCreateIdx(createIdx);
+        data.setCreateIdx(createIdx);
 
-        return repo.append(auth);
+        return repo.append(data);
     }
 
     /**
     * 권한 수정
-    * @param auth
+    * @param data
     * @param userSeq
     */
-    public int modify(SystemAuthVO auth) {
+    public int modify(SystemAuthVO data) {
         Long createIdx = Security.idx();
-        auth.setCreateIdx(createIdx);
+        data.setCreateIdx(createIdx);
 
-        return repo.modify(auth);
+        return repo.modify(data);
     }
 
     /**

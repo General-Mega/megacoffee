@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.megacoffee.modules.system.menu.MenuVO;
+import com.megacoffee.modules.system.menu.SystemMenuVO;
 import com.megacoffee.modules.user.UserVO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class HttpInterceptor implements HandlerInterceptor {
         // 예: 모델 데이터 조작, 추가 로깅 등
 
         HttpSession session = request.getSession();
-        List<MenuVO> menus = (List<MenuVO>) session.getAttribute("menus");
+        List<SystemMenuVO> menus = (List<SystemMenuVO>) session.getAttribute("menus");
         UserVO user = (UserVO) session.getAttribute("user");
 
         String requestURI = request.getRequestURI();
@@ -41,14 +41,20 @@ public class HttpInterceptor implements HandlerInterceptor {
         logger.info("User : " + user);
         logger.info("Request URI : " + requestURI);
 
-        MenuVO currentMenu = null;
         if (menus != null) {
-            List<MenuVO> filteredMenus = menus.stream().filter(menu -> menu.getUrl() != null && requestURI.contains(menu.getUrl())).toList();
-            if(filteredMenus.size() > 0) {
-                currentMenu = filteredMenus.get(0);
-            }
+            SystemMenuVO pmenu = menus.stream()
+                .filter(menu -> menu.getUrl() != null && requestURI.matches(menu.getMatchUrl()))
+                .findFirst()
+                .orElse(null);
+            
+            SystemMenuVO cmenu = pmenu == null ? null : pmenu.getChildren().stream()
+                .filter(menu -> menu.getUrl() != null && requestURI.matches(menu.getMatchUrl()))
+                .findFirst()
+                .orElse(null);
+
+            session.setAttribute("pmenu", pmenu);
+            session.setAttribute("cmenu", cmenu);
         }
-        session.setAttribute("menu", currentMenu);
     }
 
     @Override

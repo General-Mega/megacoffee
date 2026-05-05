@@ -1,4 +1,4 @@
-package com.megacoffee.modules.system.auth;
+package com.megacoffee.modules.system.menu;
 
 import java.util.List;
 
@@ -11,78 +11,77 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.megacoffee.model.PageVO;
 import com.megacoffee.model.ResultVO;
 import com.megacoffee.model.SearchVO;
 
 @Controller
-@RequestMapping("/system/auth")
-public class AuthController {
+@RequestMapping("/system/menu")
+public class SystemMenuController {
+    
     @Autowired
-    private AuthService service;
+    private SystemMenuService service;
 
     /**
-     * 권한 목록 조회
+     * 메뉴 목록 조회
      * @param param
      * @return
      */
     @GetMapping({"", "/", "/index"})
     public ModelAndView index(SearchVO param) {
-        ModelAndView mav = new ModelAndView("system/auth/index");
+        ModelAndView mav = new ModelAndView("system/menu");
         mav.addObject("searching", param);
 
         return mav;
     }
 
     /**
-     * 권한 목록 조회 (페이징 포함)
+     * 메뉴 목록 조회 (페이징 포함)
      * @param param
      * @return
      */
     @PostMapping("/list")
     public @ResponseBody ResultVO list(@RequestBody SearchVO param) {   
-        PageVO paging = service.paging(param);
-        List<AuthVO> list = service.list(param);
+        List<SystemMenuVO> list = service.list(param);
 
-        return new ResultVO(200, "Success", list, paging);
+        return new ResultVO(200, "Success", list);
     }
 
     /**
-     * 권한 등록
+     * 메뉴 등록
      * @param auth
      * @return
      */
     @PostMapping("/append")
-    public @ResponseBody ResultVO append(@RequestBody AuthVO auth) {
-        int count = service.append(auth);
+    public @ResponseBody ResultVO append(@RequestBody SystemMenuVO data) {
+        int count = service.append(data);
 
         ResultVO result = new ResultVO();
         result.setCode(count == 1 ? 200 : 500);
         result.setMessage(count == 1 ? "Success" : "Failed");
-        result.setData(auth);
+        result.setData(data);
 
         return result;
     }
 
     /**
-     * 권한 수정
+     * 메뉴 수정
      * @param auth
      * @return
      */
     @PostMapping("/modify")
-    public @ResponseBody ResultVO modify(@RequestBody AuthVO auth) {
-        int count = service.modify(auth);
+    public @ResponseBody ResultVO modify(@RequestBody SystemMenuVO data) {
+        int count = service.modify(data);
 
         ResultVO result = new ResultVO();
         result.setCode(count == 1 ? 200 : 500);
         result.setMessage(count == 1 ? "Success" : "Failed");
-        result.setData(auth);
+        result.setData(data);
 
         return result;
     }
 
     /**
-     * 권한들 삭제
+     * 메뉴들 삭제
       * @param seqs
      * @param seqs
      * @return
@@ -91,7 +90,7 @@ public class AuthController {
     public @ResponseBody ResultVO delete(@RequestBody List<Long> seqs) {
         int count = 0;
         if (seqs != null && !seqs.isEmpty()) {
-            count = service.remove(seqs);
+            count = service.removes(seqs);
         }
 
         ResultVO result = new ResultVO();

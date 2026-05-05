@@ -50,7 +50,7 @@ public class MainController {
      */
     @GetMapping("/dashboard")
     public ModelAndView dashboard(Model model) {
-        ModelAndView mav = new ModelAndView("/dashboard");
+        ModelAndView mav = new ModelAndView("dashboard");
         // 대시보드 통계 데이터 설정
         model.addAttribute("totalUsers", 248);
         model.addAttribute("totalMembers", 156);

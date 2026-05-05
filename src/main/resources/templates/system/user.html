@@ -30,7 +30,7 @@
                     <input type="text" name="searchValue" placeholder="검색어 입력" th:value="${searching.searchValue}" />
                     <select name="authSeq" class="search-type">
                         <option value="">전체 권한</option>
-                        <option th:each="auth : ${authList}"
+                        <option th:each="auth : ${listAuth}"
                                 th:value="${auth.seq}"
                                 th:text="${auth.name}"
                                 th:selected="${searching.authSeq} == auth.seq">
@@ -93,7 +93,7 @@
                 <label for="__modal_authSeq">권한</label>
                 <select id="__modal_authSeq" name="authSeq" required>
                     <option value="">권한 선택</option>
-                    <option th:each="auth : ${authList}"
+                    <option th:each="auth : ${listAuth}"
                             th:value="${auth.seq}"
                             th:text="${auth.name}">
                     </option>

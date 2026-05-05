@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.megacoffee.modules.system.menu.MenuService;
-import com.megacoffee.modules.system.menu.MenuVO;
+import com.megacoffee.modules.system.menu.SystemMenuService;
+import com.megacoffee.modules.system.menu.SystemMenuVO;
 import com.megacoffee.modules.user.UserService;
 import com.megacoffee.modules.user.UserVO;
 import com.megacoffee.security.CustomUserDetails;
@@ -23,7 +23,7 @@ public class GlobalModelAttributes {
     private UserService userService;
 
     @Autowired
-    private MenuService menuService;
+    private SystemMenuService menuService;
 
     @ModelAttribute("user")
     public UserVO addCurrentUser(HttpServletRequest request, Authentication authentication) {
@@ -48,13 +48,13 @@ public class GlobalModelAttributes {
     }
 
     @ModelAttribute("menus")
-    public List<MenuVO> addCurrentMenus(HttpServletRequest request, Authentication authentication) {
+    public List<SystemMenuVO> addCurrentMenus(HttpServletRequest request, Authentication authentication) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             Object sessionMenus = session.getAttribute("menus");
             if (sessionMenus instanceof List) {
                 @SuppressWarnings("unchecked")
-                List<MenuVO> menus = (List<MenuVO>) sessionMenus;
+                List<SystemMenuVO> menus = (List<SystemMenuVO>) sessionMenus;
                 return menus;
             }
         }
@@ -62,7 +62,7 @@ public class GlobalModelAttributes {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             if (userDetails.getSeq() != null) {
-                List<MenuVO> menus = menuService.listByUserSeq(userDetails.getSeq().intValue());
+                List<SystemMenuVO> menus = menuService.listByUserSeq(userDetails.getSeq());
                 request.getSession(true).setAttribute("menus", menus);
                 return menus;
             }

@@ -28,7 +28,7 @@ public class SystemAuthController {
      */
     @GetMapping({"", "/", "/index"})
     public ModelAndView index(SearchVO param) {
-        ModelAndView mav = new ModelAndView("system/auth/index");
+        ModelAndView mav = new ModelAndView("system/auth");
         mav.addObject("searching", param);
 
         return mav;
@@ -49,34 +49,34 @@ public class SystemAuthController {
 
     /**
      * 권한 등록
-     * @param auth
+     * @param data
      * @return
      */
     @PostMapping("/append")
-    public @ResponseBody ResultVO append(@RequestBody SystemAuthVO auth) {
-        int count = service.append(auth);
+    public @ResponseBody ResultVO append(@RequestBody SystemAuthVO data) {
+        int count = service.append(data);
 
         ResultVO result = new ResultVO();
         result.setCode(count == 1 ? 200 : 500);
         result.setMessage(count == 1 ? "Success" : "Failed");
-        result.setData(auth);
+        result.setData(data);
 
         return result;
     }
 
     /**
      * 권한 수정
-     * @param auth
+     * @param data
      * @return
      */
     @PostMapping("/modify")
-    public @ResponseBody ResultVO modify(@RequestBody SystemAuthVO auth) {
-        int count = service.modify(auth);
+    public @ResponseBody ResultVO modify(@RequestBody SystemAuthVO data) {
+        int count = service.modify(data);
 
         ResultVO result = new ResultVO();
         result.setCode(count == 1 ? 200 : 500);
         result.setMessage(count == 1 ? "Success" : "Failed");
-        result.setData(auth);
+        result.setData(data);
 
         return result;
     }

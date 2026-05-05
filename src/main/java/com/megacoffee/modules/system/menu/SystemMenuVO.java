@@ -4,29 +4,23 @@ import java.util.List;
 
 import com.megacoffee.model.BaseVO;
 
-/**
- * 메뉴 정보 VO 클래스
- * - 메뉴의 계층 구조를 표현하기 위해 parentSeq, depth, children 필드 포함
- * - URL 매칭을 위한 matchUrl 필드 포함
- * - 메뉴 정렬을 위한 sorting 필드 포함
- */
-public class MenuVO extends BaseVO{
-    private int seq;
+public class SystemMenuVO extends BaseVO{
+    private Long seq;
     private String name;
-    private int parentSeq;
+    private Long parentSeq;
     private String parentName;
     private String url;
     private String matchUrl;
     private int depth;
     private int sorting;
 
-    private List<MenuVO> children;
+    private List<SystemMenuVO> children;
 
-    public int getSeq() {
+    public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(int seq) {
+    public void setSeq(Long seq) {
         this.seq = seq;
     }
 
@@ -38,11 +32,11 @@ public class MenuVO extends BaseVO{
         this.name = name;
     }
 
-    public int getParentSeq() {
+    public Long getParentSeq() {
         return parentSeq;
     }
 
-    public void setParentSeq(int parentSeq) {
+    public void setParentSeq(Long parentSeq) {
         this.parentSeq = parentSeq;
     }
 
@@ -86,11 +80,11 @@ public class MenuVO extends BaseVO{
         this.sorting = sorting;
     }
 
-    public List<MenuVO> getChildren() {
+    public List<SystemMenuVO> getChildren() {
         return children;
     }
 
-    public void setChildren(List<MenuVO> children) {
+    public void setChildren(List<SystemMenuVO> children) {
         this.children = children;
     }
 

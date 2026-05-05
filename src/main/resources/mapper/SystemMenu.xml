@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.megacoffee.modules.system.menu.MenuRepository">
+<mapper namespace="com.megacoffee.modules.system.menu.SystemMenuRepository">
 
-  <select id="list" resultType="com.megacoffee.modules.system.menu.MenuVO" parameterType="com.megacoffee.model.SearchVO">
+  <select id="list" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="com.megacoffee.model.SearchVO">
     SELECT 
       SEQ, NAME 
       , PARENT_SEQ , URL , MATCH_URL 
@@ -12,7 +12,7 @@
     ORDER BY `DEPTH` , SORTING
   </select>
 
-  <select id="listByUserSeq" resultType="com.megacoffee.modules.system.menu.MenuVO" parameterType="com.megacoffee.model.SearchVO">
+  <select id="listByUserSeq" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="com.megacoffee.model.SearchVO">
     SELECT 
       TM.SEQ, TM.NAME 
       , TM.PARENT_SEQ , TM.URL , TM.MATCH_URL 

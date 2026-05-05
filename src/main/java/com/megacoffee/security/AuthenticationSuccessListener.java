@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.megacoffee.modules.system.menu.MenuService;
-import com.megacoffee.modules.system.menu.MenuVO;
+import com.megacoffee.modules.system.menu.SystemMenuService;
+import com.megacoffee.modules.system.menu.SystemMenuVO;
 import com.megacoffee.modules.user.UserService;
 import com.megacoffee.modules.user.UserVO;
 
@@ -24,7 +24,7 @@ public class AuthenticationSuccessListener {
     private UserService userService;
 
     @Autowired
-    private MenuService menuService;
+    private SystemMenuService menuService;
 
     @EventListener
     public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {
@@ -43,7 +43,7 @@ public class AuthenticationSuccessListener {
         userService.updateLastLogin(userSeq);
 
         //메뉴 정보 조회
-        List<MenuVO> menus = menuService.listByUserSeq(userSeq.intValue());
+        List<SystemMenuVO> menus = menuService.listByUserSeq(userSeq);
         session.setAttribute("menus", menus);
 
 
