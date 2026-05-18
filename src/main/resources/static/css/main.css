@@ -1,6 +1,7 @@
 .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .toolbar button { padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer; }
 .toolbar .btn-primary { background: #3498db; color: white; }
+.toolbar .btn-secondary { background: #95a5a6; color: white; }
 .toolbar .btn-danger { background: #e74c3c; color: white; }
 .search-section { display: flex; gap: 15px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .search-inputs { display: flex; gap: 10px; align-items: center; width: 100%;}
@@ -19,8 +20,44 @@
 .modal-dialog h2 { margin-top: 0; }
 .modal-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .modal-row label { font-weight: 600; }
+.modal-row label .required { color: #e74c3c; }
 .modal-row input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; }
+.modal-row input[readonly] { background: #ecf0f1; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
 .modal-actions button { min-width: 100px; }
 .modal-actions .btn-secondary { background: #bdc3c7; color: #2c3e50; }
 .modal-actions .btn-submit { background: #27ae60; color: white; }
+
+/* 트리 구조 스타일 */
+.tree-container { background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 15px; overflow-x: auto; }
+.tree-list { display: flex; flex-direction: column; gap: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.tree-node { display: flex; align-items: flex-start; gap: 20px; }
+.tree-node:hover { background: transparent; }
+.tree-item { min-width: 240px; padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid #ddd; box-shadow: 0 4px 8px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tree-item:hover { background: #f8fbfd; }
+.tree-label { flex: 1; cursor: pointer; word-break: break-word; font-weight: 600; }
+.tree-label:hover { text-decoration: underline; color: #2980b9; }
+.tree-actions { display: flex; gap: 6px; }
+.tree-actions .btn-action { display: none; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; min-width: 30px; }
+.tree-actions .btn-edit { background: #3498db; color: white; }
+.tree-actions .btn-add-sub { background: #27ae60; color: white; }
+.tree-actions .btn-delete { background: #e74c3c; color: white; }
+.tree-item:hover .btn-action { display: inline-block; }
+.tree-children { display: flex; flex-direction: column; gap: 20px; }
+.tree-empty { padding: 20px; text-align: center; color: #999; background: #f9f9f9; border-radius: 4px; }
+
+.authorization-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: flex-start; }
+.auth-panel, .menu-panel { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px; }
+.auth-panel .panel-header, .menu-panel .panel-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+.auth-list { display: flex; flex-direction: column; gap: 10px; }
+.auth-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #e3e3e3; border-radius: 8px; cursor: pointer; }
+.auth-item input { cursor: pointer; }
+.auth-item:hover { background: #f5fbff; }
+.menu-tree { display: flex; flex-direction: column; gap: 10px; }
+.menu-node { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid #e3e3e3; border-radius: 8px; background: #fff; }
+.menu-node .menu-label { cursor: pointer; flex: 1; }
+.menu-node:hover { background: #f8fbff; }
+.menu-children { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.selected-auth { margin-bottom: 16px; font-size: 0.95rem; color: #333; }
+.empty { color: #999; font-size: 0.95rem; }
+

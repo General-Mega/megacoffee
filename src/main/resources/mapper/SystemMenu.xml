@@ -7,6 +7,8 @@
       SEQ, NAME 
       , PARENT_SEQ , URL , MATCH_URL 
       , DEPTH, SORTING 
+      , CREATE_DATETIME, CREATE_IDX
+      , UPDATE_DATETIME, UPDATE_IDX
     FROM TB_MENU
     WHERE 1 = 1
     ORDER BY `DEPTH` , SORTING
@@ -17,6 +19,8 @@
       TM.SEQ, TM.NAME 
       , TM.PARENT_SEQ , TM.URL , TM.MATCH_URL 
       , TM.DEPTH, TM.SORTING 
+      , TM.CREATE_DATETIME, TM.CREATE_IDX
+      , TM.UPDATE_DATETIME, TM.UPDATE_IDX
     FROM TB_USER TU
       INNER JOIN TB_AUTH TA
         ON TA.SEQ = TU.AUTH_SEQ
@@ -28,5 +32,83 @@
     AND TU.SEQ = 1
     ORDER BY TM.`DEPTH` , TM.SORTING
   </select>
+
+  <select id="listByAuthSeq" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="long">
+    SELECT
+      M.SEQ, M.NAME
+      , M.PARENT_SEQ, M.URL, M.MATCH_URL
+      , M.DEPTH, M.SORTING
+      , CASE WHEN AM.SEQ_AUTH IS NOT NULL THEN 1 ELSE 0 END AS checked
+    FROM TB_MENU M
+      LEFT JOIN TB_AUTH_MENU AM
+        ON AM.SEQ_MENU = M.SEQ
+        AND AM.SEQ_AUTH = #{authSeq}
+    WHERE 1 = 1
+    ORDER BY M.`DEPTH`, M.SORTING
+  </select>
+
+  <delete id="deleteAuthMenuByAuthSeq" parameterType="long">
+    DELETE FROM TB_AUTH_MENU
+    WHERE SEQ_AUTH = #{authSeq}
+  </delete>
+
+  <insert id="insertAuthMenu" parameterType="map">
+    INSERT INTO TB_AUTH_MENU (SEQ_AUTH, SEQ_MENU, CREATE_DATETIME)
+    VALUES
+    <foreach collection="seqs" item="seq" separator=",">
+      (#{authSeq}, #{seq}, NOW())
+    </foreach>
+  </insert>
+
+  <select id="item" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="long">
+    SELECT 
+      SEQ, NAME 
+      , PARENT_SEQ , URL , MATCH_URL 
+      , DEPTH, SORTING 
+      , CREATE_DATETIME, CREATE_IDX
+      , UPDATE_DATETIME, UPDATE_IDX
+    FROM TB_MENU
+    WHERE SEQ = #{seq}
+  </select>
+
+  <insert id="append" parameterType="com.megacoffee.modules.system.menu.SystemMenuVO">
+    INSERT INTO TB_MENU 
+    (
+      NAME, PARENT_SEQ, URL, MATCH_URL, DEPTH, SORTING
+      , CREATE_IDX, CREATE_DATETIME
+    )
+    VALUES
+    (
+      #{name}, #{parentSeq}, #{url}, #{matchUrl}, #{depth}, #{sorting}
+      , #{createIdx}, NOW()
+    )
+  </insert>
+
+  <update id="modify" parameterType="com.megacoffee.modules.system.menu.SystemMenuVO">
+    UPDATE TB_MENU
+    SET
+      NAME = #{name}
+      , PARENT_SEQ = #{parentSeq}
+      , URL = #{url}
+      , MATCH_URL = #{matchUrl}
+      , DEPTH = #{depth}
+      , SORTING = #{sorting}
+      , UPDATE_IDX = #{createIdx}
+      , UPDATE_DATETIME = NOW()
+    WHERE SEQ = #{seq}
+  </update>
+
+  <delete id="remove" parameterType="map">
+    DELETE FROM TB_MENU
+    WHERE SEQ = #{seq}
+  </delete>
+
+  <delete id="removes" parameterType="map">
+    DELETE FROM TB_MENU
+    WHERE SEQ IN
+    <foreach collection="seqs" item="seq" open="(" close=")" separator=",">
+      #{seq}
+    </foreach>
+  </delete>
 
 </mapper>

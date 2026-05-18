@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="layout/head :: head('시스템 > 권한 관리')"></th:block>
-    <script src="/js/system/auth.js"></script>
+    <script src="/js/system/permission.js"></script>
 </head>
 <body>
     <div th:replace="layout/header :: header('system')"></div>
@@ -34,6 +34,7 @@
 
             <div class="toolbar">
                 <button id="__btnCreate" type="button" class="btn-primary">등록</button>
+                <button id="__btnConnectMenu" type="button" class="btn-secondary">권한 메뉴 연결</button>
                 <button id="__btnDelete" type="button" class="btn-danger">선택 삭제</button>
             </div>
 

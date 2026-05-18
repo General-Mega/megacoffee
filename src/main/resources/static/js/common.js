@@ -14,6 +14,21 @@ function doPost(url, data, callback) {
     });
 }
 
+function doPostForm(url, data, callback){
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        success: function(response) {
+            callback(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            alert('An error occurred while processing your request.');
+        }
+    });
+}
+
 function doGet(url, callback) {
     $.ajax({
         url: url,

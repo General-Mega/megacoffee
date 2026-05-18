@@ -1,103 +1,55 @@
+let menuTree = [];
+let selectedMenuData = null;
+
 $(document).ready(function() {
-    /**
-     * 검색 버튼 클릭 시
-     */
-    $("#__btn_search").click(function() {
-        let data = toData($("div.search-section"));
-        console.log("검색 데이터:", data);
-        doPost("/system/auth/list", data, function(response) {
-            createList(response);
-        });
-    });
+    // 초기 메뉴 로드
+    loadMenuTree();
 
     /**
-     * 등록 버튼 클릭 시
+     * 최상위 메뉴 추가 버튼 클릭 시
      */
     $("#__btnCreate").click(function() {
-        openModal(null);
+        selectedMenuData = null;
+        openModal(null, null, 0);
     });
 
-    /**
-     * 삭제 버튼 클릭 시
-     */
-    $("#__btnDelete").click(function() {
-        let seqs = [];
-        $(".table-container table tbody input[type='checkbox']:checked").each(function() {
-            seqs.push($(this).val());
-        });
-
-        if(seqs.length === 0) {
-            alert("삭제할 항목을 선택해주세요.");
-            return;
-        }
-
-        if(confirm("선택한 항목을 삭제하시겠습니까?")) {
-
-            doPost("/system/auth/delete", seqs
-                , function(response) {
-                    let code = response.code;
-                    if(code === 200) {
-                        alert("선택한 항목이 삭제되었습니다.");
-
-                        // 삭제 결과 처리
-                        $("#__btn_search").click(); // 삭제 후 목록 새로고침
-                    } else {
-                        alert("항목 삭제에 실패하였습니다: " + response.message);
-                    }
-                }
-            );
-        }
-    });
 
     /**
      * modal 저장 버튼 클릭 시
      */
-    $("#__modal_btn_save").click(function(event) {
+    $("#__modal_btn_save").click(function() {
         let data = toData($("#__modal"));
 
-        let isNew = false;
-
-        if(data.seq === null || data.seq === undefined || data.seq === "0") {
-            isNew = true;
+        if(!data.name || data.name.trim() === "") {
+            alert("메뉴명을 입력해주세요.");
+            return;
         }
 
-        if(isNew){
-            if(confirm("새로운 권한을 등록하시겠습니까?")) {
-                doPost("/system/auth/append", data
-                    , function(response) {
-                        let code = response.code;
-                        if(code === 200) {
-                            alert("권한이 등록되었습니다.");
-    
-                            // 저장 결과 처리
-                            $("#__btn_search").click(); // 저장 후 목록 새로고침
-                            closeModal(); // 모달 닫기
-                        } else {
-                            alert("권한 등록에 실패하였습니다: " + response.message);
-                        }
-                    }
-                );
-            }
-        }
-        else{
-            if(confirm("권한 정보를 수정하시겠습니까?")) {
-                doPost("/system/auth/modify", data
-                    , function(response) {
-                        let code = response.code;
-                        if(code === 200) {
-                            alert("권한 정보가 수정되었습니다.");
-    
-                            // 저장 결과 처리
-                            $("#__btn_search").click(); // 저장 후 목록 새로고침
-                            closeModal(); // 모달 닫기
-                        } else {
-                            alert("권한 수정에 실패하였습니다: " + response.message);
-                        }
-                    }
-                );
-            }
-        }
+        let isNew = !data.seq || data.seq === "0";
+        let confirmMsg = isNew ? "새로운 메뉴를 등록하시겠습니까?" : "메뉴 정보를 수정하시겠습니까?";
 
+        if(confirm(confirmMsg)) {
+            let url = isNew ? "/system/menu/append" : "/system/menu/modify";
+            doPost(url, data, function(response) {
+                let code = response.code;
+                if(code === 200) {
+                    alert(isNew ? "메뉴가 등록되었습니다." : "메뉴 정보가 수정되었습니다.");
+                    closeModal();
+                    loadMenuTree();
+                } else {
+                    alert((isNew ? "메뉴 등록" : "메뉴 수정") + "에 실패하였습니다: " + response.message);
+                }
+            });
+        }
+    });
+
+    /**
+     * 하위 메뉴 추가 버튼 클릭 시
+     */
+    $("#__modal_btn_addSub").click(function() {
+        let parentMenu = selectedMenuData;
+        let newDepth = parentMenu.depth + 1;
+        openModal(null, parentMenu, newDepth);
     });
 
     /**
@@ -106,97 +58,207 @@ $(document).ready(function() {
     $("#__modal_btn_cancel").click(function() {
         closeModal();
     });
-
-    /** 
-     * 목록의 전체 선택 체크박스 변경 시 
-     * 
-    */
-    $("#__select_all").change(function() {
-        let isChecked = $(this).is(":checked");
-        $(".table-container table tbody input[type='checkbox']").prop("checked", isChecked);
-    });
-
-    // 페이지 로드 시 모달 닫기
-    $("#__modal_btn_cancel").click(); 
-
-    $("#__btn_search").click(); // 페이지 로드 시 목록 불러오기
 });
 
-/** 
+/**
+ * 메뉴 트리 로드
+ */
+function loadMenuTree() {
+    doPost("/system/menu/list", {}, function(response) {
+        if(response.code === 200) {
+            menuTree = response.data;
+            renderMenuTree(menuTree);
+        } else {
+            alert("메뉴 로드에 실패했습니다.");
+        }
+    });
+}
+
+/**
+ * 메뉴 트리 렌더링
+ */
+function renderMenuTree(menus) {
+    let treeHtml = "";
+    
+    if(!menus || menus.length === 0) {
+        $("#__tree_list").html('<div class="tree-empty">메뉴 데이터가 없습니다.</div>');
+        return;
+    }
+
+    menus.forEach(function(menu) {
+        treeHtml += renderTreeNode(menu, 0);
+    });
+
+    $("#__tree_list").html(treeHtml);
+    attachTreeEventHandlers();
+}
+
+/**
+ * 트리 노드 렌더링
+ */
+function renderTreeNode(menu, level) {
+    let html = '<div class="tree-node" data-seq="' + menu.seq + '">';
+    
+    html += '<div class="tree-item">';
+    html += '  <span class="tree-label" style="cursor: pointer;">' + escapeHtml(menu.name) + '</span>';
+    html += '  <div class="tree-actions">';
+    html += '    <button class="btn-action btn-edit" title="수정">✎</button>';
+    html += '    <button class="btn-action btn-add-sub" title="하위 메뉴 추가">+</button>';
+    html += '    <button class="btn-action btn-delete" title="삭제">✕</button>';
+    html += '  </div>';
+    html += '</div>';
+
+    if(menu.children && menu.children.length > 0) {
+        html += '<div class="tree-children">';
+        menu.children.forEach(function(child) {
+            html += renderTreeNode(child, level + 1);
+        });
+        html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
+}
+
+/**
+ * 트리 이벤트 핸들러 연결
+ */
+function attachTreeEventHandlers() {
+    // 트리 라벨 클릭 (수정)
+    $(".tree-label").click(function(e) {
+        e.stopPropagation();
+        let seq = $(this).closest(".tree-node").data("seq");
+        let menuData = findMenuBySeq(menuTree, seq);
+        if(menuData) {
+            selectedMenuData = menuData;
+            openModal(menuData, menuData.parentSeq ? findMenuBySeq(menuTree, menuData.parentSeq) : null, menuData.depth);
+        }
+    });
+
+    // 수정 버튼 클릭
+    $(".btn-edit").click(function(e) {
+        e.stopPropagation();
+        let seq = $(this).closest(".tree-node").data("seq");
+        let menuData = findMenuBySeq(menuTree, seq);
+        if(menuData) {
+            selectedMenuData = menuData;
+            openModal(menuData, menuData.parentSeq ? findMenuBySeq(menuTree, menuData.parentSeq) : null, menuData.depth);
+        }
+    });
+
+    // 하위 메뉴 추가 버튼 클릭
+    $(".btn-add-sub").click(function(e) {
+        e.stopPropagation();
+        let seq = $(this).closest(".tree-node").data("seq");
+        let parentMenu = findMenuBySeq(menuTree, seq);
+        if(parentMenu) {
+            selectedMenuData = parentMenu;
+            let newDepth = parentMenu.depth + 1;
+            openModal(null, parentMenu, newDepth);
+        }
+    });
+
+    // 삭제 버튼 클릭
+    $(".btn-delete").click(function(e) {
+        e.stopPropagation();
+        let seq = $(this).closest(".tree-node").data("seq");
+        let menuData = findMenuBySeq(menuTree, seq);
+        if(menuData) {
+            if(menuData.children && menuData.children.length > 0) {
+                alert("하위 메뉴가 있어서 삭제할 수 없습니다.\n먼저 하위 메뉴를 삭제해주세요.");
+                return;
+            }
+
+            if(confirm("'" + menuData.name + "' 메뉴를 삭제하시겠습니까?")) {
+                doPost("/system/menu/delete", [seq], function(response) {
+                    if(response.code === 200) {
+                        alert("메뉴가 삭제되었습니다.");
+                        loadMenuTree();
+                    } else {
+                        alert("메뉴 삭제에 실패했습니다: " + response.message);
+                    }
+                });
+            }
+        }
+    });
+}
+
+/**
+ * seq로 메뉴 찾기 (재귀)
+ */
+function findMenuBySeq(menus, seq) {
+    for(let i = 0; i < menus.length; i++) {
+        if(menus[i].seq == seq) {
+            return menus[i];
+        }
+        if(menus[i].children && menus[i].children.length > 0) {
+            let found = findMenuBySeq(menus[i].children, seq);
+            if(found) {
+                return found;
+            }
+        }
+    }
+    return null;
+}
+
+/**
  * 모달 열기
  */
-function openModal(data){
+function openModal(data, parentMenu, depth) {
     $("#__modal").show();
 
-    if(data != null && data != undefined){
-        $("#__modal").find("#__modal_title").text("권한 수정");
+    if(data != null && data != undefined) {
+        // 수정 모드
+        $("#__modal").find("#__modal_title").text("메뉴 수정");
         $("#__modal").find("input[name='seq']").val(data.seq);
+        $("#__modal").find("input[name='parentSeq']").val(data.parentSeq || "");
+        $("#__modal").find("input[name='depth']").val(data.depth);
         $("#__modal").find("input[name='name']").val(data.name);
-        $("#__modal").find("input[name='sorting']").val(data.sorting);
+        $("#__modal").find("input[name='url']").val(data.url || "");
+        $("#__modal").find("input[name='matchUrl']").val(data.matchUrl || "");
+        $("#__modal").find("input[name='sorting']").val(data.sorting || 0);
+        $("#__modal").find("#__modal_parentName").val((parentMenu ? parentMenu.name : "최상위 메뉴") || "");
         $("#__modal").find("#__modal_btn_save").text("수정");
-    }
-    else{
-        $("#__modal").find("#__modal_title").text("권한 등록");
+        
+        // 하위 메뉴 추가 버튼 표시
+        if(data.depth < 3) {  // 최대 3단계까지만 허용
+            $("#__modal").find("#__modal_btn_addSub").show();
+        } else {
+            $("#__modal").find("#__modal_btn_addSub").hide();
+        }
+    } else {
+        // 등록 모드
+        $("#__modal").find("#__modal_title").text("메뉴 등록");
         $("#__modal").find("input[name='seq']").val("0");
+        $("#__modal").find("input[name='parentSeq']").val(parentMenu ? parentMenu.seq : "");
+        $("#__modal").find("input[name='depth']").val(depth);
         $("#__modal").find("input[name='name']").val("");
-        $("#__modal").find("input[name='sorting']").val("0");
+        $("#__modal").find("input[name='url']").val("");
+        $("#__modal").find("input[name='matchUrl']").val("");
+        $("#__modal").find("input[name='sorting']").val(0);
+        $("#__modal").find("#__modal_parentName").val((parentMenu ? parentMenu.name : "최상위 메뉴") || "");
         $("#__modal").find("#__modal_btn_save").text("등록");
+        
+        // 하위 메뉴 추가 버튼 숨김
+        $("#__modal").find("#__modal_btn_addSub").hide();
     }
 }
 
-/** 
+/**
  * 모달 닫기
  */
-function closeModal(){
+function closeModal() {
     $("#__modal").hide();
-
+    selectedMenuData = null;
     $("#__modal").find("input[name='seq']").val("0");
     $("#__modal").find("input[name='name']").val("");
 }
 
-function createList(result){
-    let code = result.code;
-    let message = result.message;
-    let list = result.data;
-    let paging = result.paging;
-
-    // 목록 정보가 없으면
-    if(list == null || list.length == 0){
-        $(".table-container table tbody").html("<tr><td colspan='5'>데이터가 없습니다.</td></tr>");
-        return;
-    }
-
-    // 목록 정보가 있으면 테이블에 추가
-    $(".table-container table tbody").empty();
-    let count = paging.totalDataCount - ((paging.page - 1) * paging.dataCount);
-    list.forEach(function(item) {
-        let tr = $("<tr></tr>");
-        $(tr).append("<td for='__checkbox_" + item.seq + "'><input id='__checkbox_" + item.seq + "' type='checkbox' value='" + item.seq + "'></td>");
-        $(tr).append("<td>" + count + "</td>");
-        $(tr).append("<td class='left'>" + item.name + "</td>");
-        $(tr).append("<td>" + item.sorting + "</td>");
-        $(tr).append("<td>" + item.createDatetime + "</td>");
-        $(tr).append("<td>" + item.createUserName + "</td>");
-        $(tr).append("<td>" + nvl(item.updateDatetime) + "</td>");
-        $(tr).append("<td>" + nvl(item.updateUserName) + "</td>");
-        $(".table-container table tbody").append(tr);
-
-        $(tr).find("td:not(:first-child)").click(function() {
-            openModal(item);
-        });
-
-        count--;
-    });
-
-    $(".table-container table tbody input[type='checkbox']").click(function() {
-        let allChecked = $(".table-container table tbody input[type='checkbox']").length === $(".table-container table tbody input[type='checkbox']:checked").length;
-        $("#__select_all").prop("checked", allChecked);
-    });
-
-    // 페이징 정보로 페이지네이션 생성
-    createPagination(paging, function(page) {
-
-        $(".search-section input[name='page']").val(page); // 페이지 번호 업데이트
-        $("#__btn_search").click(); // 페이지 번호 클릭 시 검색 버튼 클릭하여 목록 새로고침
-    });
+/**
+ * HTML 특수문자 이스케이프
+ */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

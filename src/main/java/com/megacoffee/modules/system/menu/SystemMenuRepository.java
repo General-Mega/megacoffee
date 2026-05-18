@@ -3,6 +3,7 @@ package com.megacoffee.modules.system.menu;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.megacoffee.model.SearchVO;
 
@@ -20,6 +21,28 @@ public interface SystemMenuRepository {
      * @return
      */
     List<SystemMenuVO> listByUserSeq(Long userSeq);
+
+    /**
+     * 권한에 연결된 메뉴 포함 전체 메뉴 목록 조회
+     * @param authSeq
+     * @return
+     */
+    List<SystemMenuVO> listByAuthSeq(Long authSeq);
+
+    /**
+     * 권한에 연결된 메뉴 정보 삭제
+     * @param authSeq
+     * @return
+     */
+    int deleteAuthMenuByAuthSeq(Long authSeq);
+
+    /**
+     * 권한에 메뉴 목록 저장
+     * @param authSeq
+     * @param seqs
+     * @return
+     */
+    int insertAuthMenu(@Param("authSeq") Long authSeq, @Param("seqs") List<Long> seqs);
 
     /**
      * 특정 메뉴 조회

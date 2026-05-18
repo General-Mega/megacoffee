@@ -5,7 +5,7 @@ $(document).ready(function() {
     $("#__btn_search").click(function() {
         let data = toData($("div.search-section"));
         console.log("검색 데이터:", data);
-        doPost("/system/auth/list", data, function(response) {
+        doPost("/system/permission/list", data, function(response) {
             createList(response);
         });
     });
@@ -18,6 +18,13 @@ $(document).ready(function() {
     });
 
     /**
+     * 권한 메뉴 연결 화면 이동
+     */
+    $("#__btnConnectMenu").click(function() {
+        location.href = "/system/permission_menu";
+    });
+
+    /**
      * 삭제 버튼 클릭 시
      */
     $("#__btnDelete").click(function() {
@@ -26,14 +33,14 @@ $(document).ready(function() {
             seqs.push($(this).val());
         });
 
-        if(seqs.length === 0) {
+        if(seqs.length === 0) { 
             alert("삭제할 항목을 선택해주세요.");
             return;
         }
 
         if(confirm("선택한 항목을 삭제하시겠습니까?")) {
 
-            doPost("/system/auth/delete", seqs
+            doPost("/system/permission/delete", seqs
                 , function(response) {
                     let code = response.code;
                     if(code === 200) {
@@ -63,7 +70,7 @@ $(document).ready(function() {
 
         if(isNew){
             if(confirm("새로운 권한을 등록하시겠습니까?")) {
-                doPost("/system/auth/append", data
+                doPost("/system/permission/append", data
                     , function(response) {
                         let code = response.code;
                         if(code === 200) {
@@ -81,7 +88,7 @@ $(document).ready(function() {
         }
         else{
             if(confirm("권한 정보를 수정하시겠습니까?")) {
-                doPost("/system/auth/modify", data
+                doPost("/system/permission/modify", data
                     , function(response) {
                         let code = response.code;
                         if(code === 200) {

@@ -18,63 +18,51 @@
                 <p>시스템 메뉴를 검색, 등록, 수정, 삭제할 수 있습니다.</p>
             </div>
 
-            <div class="search-section">
-                <div class="search-inputs">
-                    <select name="searchType" class="search-type">
-                        <option value="">전체</option>
-                        <option value="name">권한명</option>
-                    </select>
-                    <input type="text" name="searchValue" placeholder="권한명 검색" th:value="${searching.searchValue}"/>
-                </div>
-                <button id="__btn_search" type="button">🔍 검색</button>
-                <!-- <button id="btnReset" type="button" class="reset">초기화</button> -->
-            </div>
-
             <div class="toolbar">
-                <button id="__btnCreate" type="button" class="btn-primary">등록</button>
-                <button id="__btnDelete" type="button" class="btn-danger">선택 삭제</button>
+                <button id="__btnCreate" type="button" class="btn-primary">최상위 메뉴 추가</button>
             </div>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;"><input type="checkbox" id="__select_all"></th>
-                            <th style="width: 60px">번호</th>
-                            <th>권한명</th>
-                            <th style="width: 70px;">정렬순서</th>
-                            <th style="width: 140px;">생성일시</th>
-                            <th style="width: 80px;">생성자</th>
-                            <th style="width: 140px;">수정일시</th>
-                            <th style="width: 80px;">수정자</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="8">검색 결과가 없습니다.</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="tree-container">
+                <div id="__tree_list" class="tree-list">
+                    <div class="tree-empty">메뉴 데이터가 없습니다.</div>
+                </div>
             </div>
 
             <!-- 페이지네이션 영역 -->
-            <div class="pagination">
-            </div>
+            <!-- 메뉴는 트리 구조로 전체 로드 -->
         </main>
     </div>
 
-    <div class="modal-backdrop open" id="__modal">
+    <div class="modal-backdrop" id="__modal">
         <div class="modal-dialog">
             <h2 id="__modal_title">메뉴 등록</h2>
             <input type="hidden" name="seq"/>
-            <input type="hidden" name="sorting"/>
+            <input type="hidden" name="parentSeq"/>
+            <input type="hidden" name="depth"/>
 
             <div class="modal-row">
-                <label for="__modal_name">권한명</label>
+                <label for="__modal_parentName">상위 메뉴</label>
+                <input type="text" id="__modal_parentName" name="parentName" readonly />
+            </div>
+            <div class="modal-row">
+                <label for="__modal_name">메뉴명<span class="required">*</span></label>
                 <input type="text" id="__modal_name" name="name" required maxlength="100" />
+            </div>
+            <div class="modal-row">
+                <label for="__modal_url">URL</label>
+                <input type="text" id="__modal_url" name="url" maxlength="200" placeholder="예: /system/menu" />
+            </div>
+            <div class="modal-row">
+                <label for="__modal_matchUrl">Match URL</label>
+                <input type="text" id="__modal_matchUrl" name="matchUrl" maxlength="200" placeholder="정규표현식" />
+            </div>
+            <div class="modal-row">
+                <label for="__modal_sorting">정렬순서</label>
+                <input type="number" id="__modal_sorting" name="sorting" value="0" min="0" />
             </div>
             <div class="modal-actions">
                 <button id="__modal_btn_cancel" type="button" class="btn-secondary">취소</button>
+                <button id="__modal_btn_addSub" type="button" class="btn-secondary" style="display:none;">하위 메뉴 추가</button>
                 <button id="__modal_btn_save" type="submit" class="btn-submit">저장</button>
             </div>
         </div>

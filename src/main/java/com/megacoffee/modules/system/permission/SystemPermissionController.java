@@ -1,4 +1,4 @@
-package com.megacoffee.modules.system.auth;
+package com.megacoffee.modules.system.permission;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ import com.megacoffee.model.ResultVO;
 import com.megacoffee.model.SearchVO;
 
 @Controller
-@RequestMapping("/system/auth")
-public class SystemAuthController {
+@RequestMapping("/system/permission")
+public class SystemPermissionController {
     @Autowired
-    private SystemAuthService service;
+    private SystemPermissionService service;
 
     /**
      * 권한 목록 조회
@@ -28,7 +28,7 @@ public class SystemAuthController {
      */
     @GetMapping({"", "/", "/index"})
     public ModelAndView index(SearchVO param) {
-        ModelAndView mav = new ModelAndView("system/auth");
+        ModelAndView mav = new ModelAndView("system/permission");
         mav.addObject("searching", param);
 
         return mav;
@@ -42,7 +42,7 @@ public class SystemAuthController {
     @PostMapping("/list")
     public @ResponseBody ResultVO list(@RequestBody SearchVO param) {   
         PageVO paging = service.paging(param);
-        List<SystemAuthVO> list = service.list(param);
+        List<SystemPermissionVO> list = service.list(param);
 
         return new ResultVO(200, "Success", list, paging);
     }
@@ -53,7 +53,7 @@ public class SystemAuthController {
      * @return
      */
     @PostMapping("/append")
-    public @ResponseBody ResultVO append(@RequestBody SystemAuthVO data) {
+    public @ResponseBody ResultVO append(@RequestBody SystemPermissionVO data) {
         int count = service.append(data);
 
         ResultVO result = new ResultVO();
@@ -70,7 +70,7 @@ public class SystemAuthController {
      * @return
      */
     @PostMapping("/modify")
-    public @ResponseBody ResultVO modify(@RequestBody SystemAuthVO data) {
+    public @ResponseBody ResultVO modify(@RequestBody SystemPermissionVO data) {
         int count = service.modify(data);
 
         ResultVO result = new ResultVO();
@@ -101,4 +101,5 @@ public class SystemAuthController {
 
         return result;
     }
+
 }

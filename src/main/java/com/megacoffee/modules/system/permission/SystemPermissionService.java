@@ -1,4 +1,4 @@
-package com.megacoffee.modules.system.auth;
+package com.megacoffee.modules.system.permission;
 
 import java.util.List;
 
@@ -10,16 +10,16 @@ import com.megacoffee.model.PageVO;
 import com.megacoffee.model.SearchVO;
 
 @Service
-public class SystemAuthService {
+public class SystemPermissionService {
     @Autowired
-    private SystemAuthRepository repo;
+    private SystemPermissionRepository repo;
 
     /**
      * 권한 목록 조회
      * @param searching
      * @return
      */
-    public List<SystemAuthVO> list(SearchVO searching) {
+    public List<SystemPermissionVO> list(SearchVO searching) {
         return repo.list(searching);
     }
 
@@ -33,11 +33,19 @@ public class SystemAuthService {
     }
 
     /**
+     * 권한 전체 목록 조회
+     * @return
+     */
+    public List<SystemPermissionVO> listAll() {
+        return repo.listAll();
+    }
+
+    /**
      * 권한 단건 조회
      * @param seq
      * @return
      */
-    public SystemAuthVO item(Long seq) {
+    public SystemPermissionVO item(Long seq) {
         return repo.item(seq);
     }
 
@@ -46,7 +54,7 @@ public class SystemAuthService {
      * @param data
      * @param userSeq
      */
-    public int append(SystemAuthVO data) {
+    public int append(SystemPermissionVO data) {
         Long createIdx = Security.idx();
         data.setCreateIdx(createIdx);
 
@@ -58,7 +66,7 @@ public class SystemAuthService {
     * @param data
     * @param userSeq
     */
-    public int modify(SystemAuthVO data) {
+    public int modify(SystemPermissionVO data) {
         Long createIdx = Security.idx();
         data.setCreateIdx(createIdx);
 

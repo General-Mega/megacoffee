@@ -1,8 +1,8 @@
-package com.megacoffee.modules.system.auth;
+package com.megacoffee.modules.system.permission;
 
 import com.megacoffee.model.BaseVO;
 
-public class SystemAuthVO extends BaseVO{
+public class SystemPermissionVO extends BaseVO{
     private int seq;
     private String name;
     private int sorting;

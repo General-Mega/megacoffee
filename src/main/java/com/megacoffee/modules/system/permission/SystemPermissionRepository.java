@@ -1,4 +1,4 @@
-package com.megacoffee.modules.system.auth;
+package com.megacoffee.modules.system.permission;
 
 import java.util.List;
 
@@ -9,14 +9,20 @@ import com.megacoffee.model.PageVO;
 import com.megacoffee.model.SearchVO;
 
 @Mapper
-public interface SystemAuthRepository {
+public interface SystemPermissionRepository {
 
     /**
      * 권한 목록 조회
      * @param searching
      * @return
      */
-    List<SystemAuthVO> list(SearchVO searching);
+    List<SystemPermissionVO> list(SearchVO searching);
+
+    /**
+     * 권한 전체 목록 조회
+     * @return
+     */
+    List<SystemPermissionVO> listAll();
 
     /**
      * 권한 총 개수 조회
@@ -30,19 +36,19 @@ public interface SystemAuthRepository {
      * @param seq
      * @return
      */
-    SystemAuthVO item(@Param("seq") Long seq);
+    SystemPermissionVO item(@Param("seq") Long seq);
 
     /**
      * 권한 등록
      * @param auth
      */
-    int append(SystemAuthVO auth);
+    int append(SystemPermissionVO auth);
 
     /**
      * 권한 수정
      * @param auth
      */
-    int modify(SystemAuthVO auth);
+    int modify(SystemPermissionVO auth);
 
     /**
      * 권한 1건 삭제

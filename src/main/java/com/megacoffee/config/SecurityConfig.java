@@ -1,5 +1,6 @@
 package com.megacoffee.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,8 +8,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.megacoffee.security.CustomFailureHandler;
+import com.megacoffee.security.CustomSuccessHandler;
+
 @Configuration
 public class SecurityConfig {
+
+    @Autowired
+    private CustomSuccessHandler successHandler;
+
+    @Autowired
+    private CustomFailureHandler failureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,8 +41,10 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error=true")
+                // .defaultSuccessUrl("/", true)
+                // .failureUrl("/login?error=true")
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
                 .permitAll()
             )
             .rememberMe(rememberMe -> rememberMe

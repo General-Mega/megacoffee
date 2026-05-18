@@ -28,7 +28,7 @@ public class SystemMenuService {
             return List.of();
         }
 
-        List<SystemMenuVO> list = menus.stream().filter(m -> m.getParentSeq() == 0).toList();
+        List<SystemMenuVO> list = menus.stream().filter(m -> m.getParentSeq() == null || m.getParentSeq() == 0).toList();
         setupChildren(list, menus);
 
         return list;
@@ -50,6 +50,47 @@ public class SystemMenuService {
         setupChildren(list, menus);
 
         return list;
+    }
+
+    /**
+     * 권한에 연동된 메뉴 목록 조회
+     * @param authSeq
+     * @return
+     */
+    public List<SystemMenuVO> listByAuthSeq(Long authSeq) {
+        List<SystemMenuVO> menus = repo.listByAuthSeq(authSeq);
+
+        if(menus == null || menus.isEmpty()) {
+            return List.of();
+        }
+
+        List<SystemMenuVO> list = menus.stream().filter(m -> m.getParentSeq() == null || m.getParentSeq() == 0).toList();
+        setupChildren(list, menus);
+
+        return list;
+    }
+
+    /**
+     * 권한 메뉴 매핑 전체 삭제
+     * @param authSeq
+     * @return
+     */
+    public int deleteAuthMenu(Long authSeq) {
+        return repo.deleteAuthMenuByAuthSeq(authSeq);
+    }
+
+    /**
+     * 권한 메뉴 매핑 저장
+     * @param authSeq
+     * @param seqs
+     * @return
+     */
+    public int saveAuthMenu(Long authSeq, List<Long> seqs) {
+        repo.deleteAuthMenuByAuthSeq(authSeq);
+        if (seqs == null || seqs.isEmpty()) {
+            return 1;
+        }
+        return repo.insertAuthMenu(authSeq, seqs);
     }
 
     /**

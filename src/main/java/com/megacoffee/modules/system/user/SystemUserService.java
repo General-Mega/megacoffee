@@ -50,10 +50,29 @@ public class SystemUserService {
      * @return
      */
     public int append(SystemUserVO user) {
+        if (user == null || user.getUserId() == null || user.getUserId().trim().isEmpty()) {
+            return 0;
+        }
+        if (repo.idCheck(user.getUserId().trim())) {
+            return 0;
+        }
+
         Long createIdx = Security.idx();
         user.setCreateIdx(createIdx);
         
         return repo.append(user);
+    }
+
+    /**
+     * 사용자 ID 중복 확인
+     * @param userId
+     * @return
+     */
+    public boolean idCheck(String userId) {
+        if (userId == null || userId.trim().isEmpty()) {
+            return false;
+        }
+        return repo.idCheck(userId.trim());
     }
 
     /**

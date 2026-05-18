@@ -6,17 +6,20 @@
   <!-- 사용자 정보 목록 조회 -->
   <select id="list" resultType="com.megacoffee.modules.system.user.SystemUserVO" parameterType="com.megacoffee.model.SearchVO">
     SELECT 
-      SEQ, USER_ID
-      , PASSWORD_RESET, LAST_LOGIN_DATETIME
-      , CREATE_DATETIME, CREATE_IDX
-      , UPDATE_DATETIME, UPDATE_IDX
-    FROM TB_USER
+      TU.SEQ, TU.USER_ID, TU.NAME, TU.MOBILE, TU.EMAIL
+      , TU.AUTH_SEQ, TA.NAME AS AUTH_NAME
+      , TU.PASSWORD_RESET, TU.LAST_LOGIN_DATETIME
+      , TU.CREATE_DATETIME, TU.CREATE_IDX
+      , TU.UPDATE_DATETIME, TU.UPDATE_IDX
+    FROM TB_USER TU
+      LEFT OUTER JOIN TB_AUTH TA
+        ON TA.SEQ = TU.AUTH_SEQ
     WHERE 1 = 1
-    AND DELETED = 0
+    AND TU.DELETED = 0
     <if test="searchValue != null and searchValue != ''">
-      AND USER_ID LIKE CONCAT('%', #{searchValue}, '%')
+      AND TU.USER_ID LIKE CONCAT('%', #{searchValue}, '%')
     </if>
-    ORDER BY USER_ID
+    ORDER BY TU.USER_ID
     LIMIT #{startDataNumber}, #{dataCount}
   </select>
 
@@ -65,8 +68,20 @@
     UPDATE TB_USER
     SET UPDATE_DATETIME = NOW()
       , UPDATE_IDX = #{createIdx}
+      <if test="name != null">
+      , NAME = #{name}
+      </if>
       <if test="password != null and password != ''">
       , PASSWORD = #{password}
+      </if>
+      <if test="authSeq != null">
+      , AUTH_SEQ = #{authSeq}
+      </if>
+      <if test="mobile != null">
+      , MOBILE = #{mobile}
+      </if>
+      <if test="email != null">
+      , EMAIL = #{email}
       </if>
     WHERE SEQ = #{seq}
   </update>
@@ -78,6 +93,17 @@
       , DELETE_DATETIME = NOW()
       , DELETE_IDX = #{createIdx}
     WHERE SEQ = #{seq}
+  </update>
+
+  <update id="removes">
+    UPDATE TB_USER
+    SET DELETED = 1,
+        DELETE_IDX = #{createIdx},
+        DELETE_DATETIME = NOW()
+    WHERE SEQ IN
+    <foreach item="seq" collection="seqs" open="(" separator="," close=")">
+      #{seq}
+    </foreach>
   </update>
 
   <!-- 비밀번호 초기화 요청 -->

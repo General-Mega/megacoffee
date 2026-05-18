@@ -13,6 +13,7 @@ public class SystemMenuVO extends BaseVO{
     private String matchUrl;
     private int depth;
     private int sorting;
+    private boolean checked;
 
     private List<SystemMenuVO> children;
 
@@ -78,6 +79,14 @@ public class SystemMenuVO extends BaseVO{
 
     public void setSorting(int sorting) {
         this.sorting = sorting;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     public List<SystemMenuVO> getChildren() {

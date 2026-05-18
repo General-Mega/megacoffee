@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.megacoffee.infra.ShareService;
 import com.megacoffee.model.PageVO;
 import com.megacoffee.model.ResultVO;
-import com.megacoffee.model.SearchVO;
 
 @Controller
 @RequestMapping("/system/user")
@@ -31,8 +30,8 @@ public class SystemUserController {
      * @return
      */
     @GetMapping({"", "/", "/index"})
-    public ModelAndView index(SearchVO param) {
-        ModelAndView mav = new ModelAndView("system/user/index");
+    public ModelAndView index(SystemUserSearchVO param) {
+        ModelAndView mav = new ModelAndView("system/user");
         mav.addObject("searching", param);
         mav.addObject("listAuth", share.listAuth());
 
@@ -45,7 +44,7 @@ public class SystemUserController {
      * @return
      */
     @PostMapping("/list")
-    public @ResponseBody ResultVO list(@RequestBody SearchVO param) {
+    public @ResponseBody ResultVO list(@RequestBody SystemUserSearchVO param) {
         PageVO paging = service.paging(param);
         List<SystemUserVO> list = service.list(param);
 
@@ -54,6 +53,13 @@ public class SystemUserController {
 
     @PostMapping("/append")
     public @ResponseBody ResultVO append(@RequestBody SystemUserVO user) {
+        if (user == null || user.getUserId() == null || user.getUserId().trim().isEmpty()) {
+            return new ResultVO(500, "아이디를 입력해주세요.");
+        }
+        if (service.idCheck(user.getUserId())) {
+            return new ResultVO(500, "이미 사용 중인 아이디입니다.");
+        }
+
         int count = service.append(user);
 
         ResultVO result = new ResultVO();
@@ -62,6 +68,12 @@ public class SystemUserController {
         result.setData(user);
 
         return result;
+    }
+
+    @PostMapping("/idCheck")
+    public @ResponseBody ResultVO idCheck(@RequestBody SystemUserVO user) {
+        boolean isDuplicate = service.idCheck(user.getUserId());
+        return new ResultVO(200, "Success", isDuplicate);
     }
 
     @PostMapping("/modify")

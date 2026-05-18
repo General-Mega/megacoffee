@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.megacoffee.modules.system.authorization.SystemAuthorizationRepository">
+
+  <!-- 권한 전체 목록 -->
+  <select id="list" resultType="com.megacoffee.modules.system.permission.SystemPermissionVO">
+      SELECT TA.SEQ, TA.NAME, TA.SORTING
+      FROM TB_AUTH TA
+      WHERE 1 = 1
+      AND TA.DELETED = 0
+      ORDER BY TA.SORTING ASC
+  </select>
+
+  <select id="menus" parameterType="java.lang.Long" resultType="com.megacoffee.modules.system.menu.SystemMenuVO">
+    SELECT 
+      TM.SEQ , TM.NAME , TM.PARENT_SEQ 
+      , TM.URL , TM.MATCH_URL 
+      , TM.`DEPTH` , TM.SORTING 
+      , TAM.SEQ_AUTH, IF(TAM.SEQ_AUTH IS NULL, 0, 1) AS CHECKED
+    FROM TB_MENU TM
+      LEFT OUTER JOIN TB_AUTH_MENU TAM
+        ON TAM.SEQ_AUTH = #{authSeq}
+        AND TAM.SEQ_MENU = TM.SEQ
+    WHERE 1 = 1
+    AND TM.DELETED = 0
+    <if test="menuSeq != null">
+    AND TM.PARENT_SEQ = #{menuSeq}
+    </if>
+    <if test="menuSeq == null">
+    AND TM.PARENT_SEQ IS NULL
+    </if>
+    ORDER BY TM.SORTING
+  </select>
+
+  <delete id="removes" parameterType="java.lang.Long">
+    DELETE FROM TB_AUTH_MENU
+    WHERE SEQ_AUTH = #{authSeq}
+  </delete>
+
+  <insert id="append">
+    INSERT INTO TB_AUTH_MENU (SEQ_AUTH, SEQ_MENU)
+    <foreach open="VALUES" collection="menuSeqs" item="menuSeq" separator=",">
+      (#{authSeq}, #{menuSeq})
+    </foreach>
+  </insert>
+
+</mapper>
