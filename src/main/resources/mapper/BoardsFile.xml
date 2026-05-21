@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.megacoffee.modules.boards.BoardsFileRepository">
+
+  <select id="findFilesByBoardSeq" resultType="com.megacoffee.model.FileVO" parameterType="long">
+    SELECT
+      F.SEQ, F.FILE_ID, F.ORIGINAL_NAME, F.STORED_NAME, F.FILE_PATH, F.FILE_EXTENSION, F.FILE_SIZE, F.MIME_TYPE
+    FROM TB_BOARD_FILE BF
+    INNER JOIN TB_FILE F ON BF.FILE_ID = F.FILE_ID
+    WHERE BF.BOARD_SEQ = #{boardSeq}
+      AND BF.DELETED = 0
+      AND F.DELETED = 0
+    ORDER BY BF.ORDER_NUM
+  </select>
+
+  <insert id="append" parameterType="com.megacoffee.modules.boards.BoardsFileVO" useGeneratedKeys="true" keyProperty="seq" keyColumn="SEQ">
+    INSERT INTO TB_BOARD_FILE
+    (
+      BOARD_SEQ, FILE_ID, ORDER_NUM, CREATE_DATETIME
+    )
+    VALUES
+    (
+      #{boardSeq}, #{fileId}, #{orderNum}, NOW()
+    )
+  </insert>
+
+  <update id="deleteByBoardSeq" parameterType="map">
+    UPDATE TB_BOARD_FILE
+    SET DELETE_DATETIME = NOW()
+      , DELETE_IDX = #{deleteIdx}
+      , DELETED = 1
+    WHERE BOARD_SEQ = #{boardSeq}
+  </update>
+
+</mapper>

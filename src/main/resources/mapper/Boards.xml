@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.megacoffee.modules.boards.BoardsRepository">
+
+  <select id="list" resultType="com.megacoffee.modules.boards.BoardsVO" parameterType="com.megacoffee.model.SearchVO">
+    SELECT
+      SEQ, TYPE, TITLE, TOP_FIXED
+      , CREATE_DATETIME, CREATE_IDX
+      , UPDATE_DATETIME, UPDATE_IDX
+    FROM TB_BOARD
+    WHERE 1 = 1
+      AND DELETED = 0
+      AND TYPE = #{type}
+    <if test="searchValue != null and searchValue != ''">
+      <choose>
+        <when test="searchType == 'title'">
+          AND TITLE LIKE CONCAT('%', #{searchValue}, '%')
+        </when>
+        <when test="searchType == 'content'">
+          AND CONTENT LIKE CONCAT('%', #{searchValue}, '%')
+        </when>
+        <otherwise>
+          AND (TITLE LIKE CONCAT('%', #{searchValue}, '%') OR CONTENT LIKE CONCAT('%', #{searchValue}, '%'))
+        </otherwise>
+      </choose>
+    </if>
+    ORDER BY TOP_FIXED DESC, SEQ DESC
+    LIMIT #{startDataNumber}, #{dataCount}
+  </select>
+
+  <select id="paging" resultType="com.megacoffee.model.PageVO" parameterType="com.megacoffee.model.SearchVO">
+    SELECT
+      COUNT(1) AS TOTAL_DATA_COUNT,
+      #{page} AS PAGE,
+      #{dataCount} AS DATA_COUNT
+    FROM TB_BOARD
+    WHERE 1 = 1
+      AND DELETED = 0
+      AND TYPE = #{type}
+    <if test="searchValue != null and searchValue != ''">
+      <choose>
+        <when test="searchType == 'title'">
+          AND TITLE LIKE CONCAT('%', #{searchValue}, '%')
+        </when>
+        <when test="searchType == 'content'">
+          AND CONTENT LIKE CONCAT('%', #{searchValue}, '%')
+        </when>
+        <otherwise>
+          AND (TITLE LIKE CONCAT('%', #{searchValue}, '%') OR CONTENT LIKE CONCAT('%', #{searchValue}, '%'))
+        </otherwise>
+      </choose>
+    </if>
+  </select>
+
+  <select id="item" resultType="com.megacoffee.modules.boards.BoardsVO" parameterType="com.megacoffee.modules.boards.BoardsVO">
+    SELECT
+      SEQ, TYPE, TITLE, CONTENT, TOP_FIXED
+      , CREATE_DATETIME, CREATE_IDX
+      , UPDATE_DATETIME, UPDATE_IDX
+    FROM TB_BOARD
+    WHERE 1 = 1
+      AND DELETED = 0
+      AND SEQ = #{seq}
+      AND TYPE = #{type}
+  </select>
+
+  <insert id="append" parameterType="com.megacoffee.modules.boards.BoardsVO" useGeneratedKeys="true" keyProperty="seq" keyColumn="SEQ">
+    INSERT INTO TB_BOARD
+    (
+      TYPE, TITLE, CONTENT, TOP_FIXED
+      , CREATE_DATETIME, CREATE_IDX
+    )
+    VALUES
+    (
+      #{type}, #{title}, #{content}, #{topFixed}
+      , NOW(), #{createIdx}
+    )
+  </insert>
+
+  <update id="modify" parameterType="com.megacoffee.modules.boards.BoardsVO">
+    UPDATE TB_BOARD
+    SET UPDATE_DATETIME = NOW() , UPDATE_IDX = #{createIdx}
+    <if test="title != null and title != ''">
+      , TITLE = #{title}
+    </if>
+    <if test="content != null and content != ''">
+      , CONTENT = #{content}
+    </if>
+    <if test="topFixed != null">
+      , TOP_FIXED = #{topFixed}
+    </if>
+    WHERE SEQ = #{seq}
+      AND TYPE = #{type}
+  </update>
+
+  <update id="remove" parameterType="com.megacoffee.modules.boards.BoardsVO">
+    UPDATE TB_BOARD
+    SET DELETE_DATETIME = NOW()
+      , DELETE_IDX = #{createIdx}
+      , DELETED = 1
+    WHERE SEQ = #{seq}
+      AND TYPE = #{type}
+  </update>
+
+  <update id="removes">
+    UPDATE TB_BOARD
+    SET DELETE_DATETIME = NOW()
+      , DELETE_IDX = #{createIdx}
+      , DELETED = 1
+    WHERE TYPE = #{type}
+      AND SEQ IN
+      <foreach item="seq" collection="seqs" open="(" separator="," close=")">
+        #{seq}
+      </foreach>
+  </update>
+
+</mapper>
