@@ -234,7 +234,7 @@ HTML 파일에서:
 <head>
     <meta charset="UTF-8">
     <title>새 페이지</title>
-    <link rel="stylesheet" href="/css/admin-layout.css">
+    <link rel="stylesheet" href="/assets/css/admin-layout.css">
 </head>
 <body>
     <!-- 기존 dashboard.html 참고하여 구조 복사 -->
