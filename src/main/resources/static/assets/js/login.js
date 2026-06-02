@@ -19,7 +19,7 @@ $(document).ready(function(){
 
         let param = {"username" : id, "password" : pwd};
 
-        doPostForm("/login", param
+        doPost("/login", param
             , function(result){
                 let code = result.code;
                 let message = result.message;

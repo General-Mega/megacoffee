@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
-    <th:block th:replace="layout/head :: head('시스템 > 메뉴 관리')"></th:block>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로그인</title>
     <link rel="stylesheet" href="/assets/css/login.css">
     <script src="/assets/js/login.js"></script>
 </head>
 <body>
     <div class="login-box">
         <h1>로그인</h1>
-        <!-- <form method="post" action="/login"> -->
-            <label for="__username">아이디</label>
-            <input id="__username" name="username" type="text" required autocomplete="username" />
-            <label for="__password">비밀번호</label>
-            <input id="__password" name="password" type="password" required autocomplete="current-password" />
+        <form method="post" action="/login">
+            <label for="username">아이디</label>
+            <input id="username" name="username" type="text" required autocomplete="username" />
+            <label for="password">비밀번호</label>
+            <input id="password" name="password" type="password" required autocomplete="current-password" />
             <div style="margin-bottom:16px; display:flex; align-items:center; visibility:visible;">
                 <input id="remember-me" name="remember-me" type="checkbox" checked />
                 <label for="remember-me" style="margin-left:8px; margin-bottom:0; font-size:14px; cursor:pointer;">아이디와 비밀번호 저장 (24시간)</label>
             </div>
-            <button id="__btn_login" type="submit">로그인</button>
-        <!-- </form> -->
+            <button type="submit">로그인</button>
+        </form>
         <div class="message" id="message"></div>
         <div style="display:flex; gap:12px; margin-top:16px;">
             <button type="button" onclick="window.location.href='/register'" style="flex:1; background:#28a745;">회원가입</button>
@@ -26,7 +28,20 @@
         </div>
     </div>
     <script>
+        const params = new URLSearchParams(window.location.search);
+        const messageEl = document.getElementById('message');
+        if (params.get('error')) {
+            messageEl.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+        } else if (params.get('logout')) {
+            messageEl.textContent = '로그아웃 되었습니다.';
+            messageEl.classList.add('success');
+        } else if (params.get('registered')) {
+            messageEl.textContent = '회원가입이 완료되었습니다. 로그인해 주세요.';
+            messageEl.classList.add('success');
+        } else if (params.get('resetRequested')) {
+            messageEl.textContent = '비밀번호 초기화 요청이 접수되었습니다.';
+            messageEl.classList.add('success');
+        }
     </script>
-    <div th:replace="layout/footer :: footer"></div>
 </body>
 </html>

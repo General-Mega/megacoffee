@@ -29,9 +29,7 @@ public class SecurityConfig {
                     "/login",
                     "/register",
                     "/password-reset-request",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
+                    "/assets/**",
                     "/static/**"
                 ).permitAll()
                 .requestMatchers("/members/**").authenticated()
