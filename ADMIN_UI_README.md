@@ -138,7 +138,7 @@ src/main/resources/
 ### 1. CSS 연결
 모든 HTML 파일에서:
 ```html
-<link rel="stylesheet" href="/assets/css/admin-layout.css">
+<link rel="stylesheet" href="/assets/admin/css/admin-layout.css">
 ```
 
 ### 2. 네비게이션 메뉴 활성화
@@ -160,7 +160,7 @@ src/main/resources/
 <head>
     <meta charset="UTF-8">
     <title>페이지 제목</title>
-    <link rel="stylesheet" href="/assets/css/admin-layout.css">
+    <link rel="stylesheet" href="/assets/admin/css/admin-layout.css">
 </head>
 <body>
     <!-- 네비게이션 바 복사 -->

@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.megacoffee.model.SearchVO;
-import com.megacoffee.modules.system.permission.SystemPermissionService;
-import com.megacoffee.modules.system.permission.SystemPermissionVO;
+import com.megacoffee.modules.admin.system.permission.SystemPermissionService;
+import com.megacoffee.modules.admin.system.permission.SystemPermissionVO;
 
 @Component
 public class ShareService {

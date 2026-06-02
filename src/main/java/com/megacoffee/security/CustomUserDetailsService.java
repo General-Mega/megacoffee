@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.megacoffee.modules.user.UserVO;
-import com.megacoffee.modules.user.UserRepo;
+import com.megacoffee.modules.admin.user.UserRepo;
+import com.megacoffee.modules.admin.user.UserVO;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

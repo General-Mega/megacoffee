@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>설정</title>
-    <link rel="stylesheet" href="/assets/css/admin-layout.css">
+    <link rel="stylesheet" href="/assets/admin/css/admin-layout.css">
     <style>
         .settings-form {
             max-width: 600px;
@@ -95,11 +95,11 @@
     </style>
 </head>
 <body>
-    <div th:replace="layout/header :: header('settings')"></div>
+    <div th:replace="admin/layout/header :: header('settings')"></div>
 
     <!-- ========== 메인 컨테이너 ========== -->
     <div class="main-container">
-        <aside th:replace="layout/sidebar :: sidebar('settings')"></aside>
+        <aside th:replace="admin/layout/sidebar :: sidebar('settings')"></aside>
 
         <!-- ========== 메인 콘텐츠 영역 ========== -->
         <main class="content">
@@ -263,7 +263,7 @@
         </main>
     </div>
 
-    <div th:replace="layout/footer :: footer"></div>
+    <div th:replace="admin/layout/footer :: footer"></div>
 
     <script>
         function switchTab(tabName) {

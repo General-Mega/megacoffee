@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.megacoffee.modules.system.menu.SystemMenuVO;
-import com.megacoffee.modules.user.UserVO;
+import com.megacoffee.modules.admin.system.menu.SystemMenuVO;
+import com.megacoffee.modules.admin.user.UserVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

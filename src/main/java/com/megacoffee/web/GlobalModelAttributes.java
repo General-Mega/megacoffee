@@ -7,10 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.megacoffee.modules.system.menu.SystemMenuService;
-import com.megacoffee.modules.system.menu.SystemMenuVO;
-import com.megacoffee.modules.user.UserService;
-import com.megacoffee.modules.user.UserVO;
+import com.megacoffee.modules.admin.system.menu.SystemMenuService;
+import com.megacoffee.modules.admin.system.menu.SystemMenuVO;
+import com.megacoffee.modules.admin.user.UserService;
+import com.megacoffee.modules.admin.user.UserVO;
 import com.megacoffee.security.CustomUserDetails;
 
 import jakarta.servlet.http.HttpServletRequest;

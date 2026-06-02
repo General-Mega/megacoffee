@@ -1,0 +1,100 @@
+package com.megacoffee.modules.admin.system.permission;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.megacoffee.infra.Security;
+import com.megacoffee.model.PageVO;
+import com.megacoffee.model.SearchVO;
+
+@Service
+public class SystemPermissionService {
+    @Autowired
+    private SystemPermissionRepository repo;
+
+    /**
+     * 권한 목록 조회
+     * @param searching
+     * @return
+     */
+    public List<SystemPermissionVO> list(SearchVO searching) {
+        return repo.list(searching);
+    }
+
+    /**
+     * 권한 총 개수 조회
+     * @param searching
+     * @return
+     */
+    public PageVO paging(SearchVO searching) {
+        return repo.paging(searching);
+    }
+
+    /**
+     * 권한 전체 목록 조회
+     * @return
+     */
+    public List<SystemPermissionVO> listAll() {
+        return repo.listAll();
+    }
+
+    /**
+     * 권한 단건 조회
+     * @param seq
+     * @return
+     */
+    public SystemPermissionVO item(Long seq) {
+        return repo.item(seq);
+    }
+
+    /**
+     * 권한 등록
+     * @param data
+     * @param userSeq
+     */
+    public int append(SystemPermissionVO data) {
+        Long createIdx = Security.idx();
+        data.setCreateIdx(createIdx);
+
+        return repo.append(data);
+    }
+
+    /**
+    * 권한 수정
+    * @param data
+    * @param userSeq
+    */
+    public int modify(SystemPermissionVO data) {
+        Long createIdx = Security.idx();
+        data.setCreateIdx(createIdx);
+
+        return repo.modify(data);
+    }
+
+    /**
+     * 권한 삭제
+     * @param seqList
+     * @param userSeq
+     */
+    public int remove(Long seq) {
+        Long createIdx = Security.idx();
+        
+        return repo.remove(seq, createIdx);
+    }
+
+    /**
+     * 권한 일괄 삭제
+     * @param seqs
+     * @return
+     */
+    public int removes(List<Long> seqs) {
+        if (seqs == null || seqs.isEmpty()) {
+            return 0;
+        }
+        Long createIdx = Security.idx();
+        
+        return repo.removes(seqs, createIdx);
+    }
+}

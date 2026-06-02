@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.megacoffee.modules.system.authorization.SystemAuthorizationRepository">
+<mapper namespace="com.megacoffee.modules.admin.system.authorization.SystemAuthorizationRepository">
 
   <!-- 권한 전체 목록 -->
-  <select id="list" resultType="com.megacoffee.modules.system.permission.SystemPermissionVO">
+  <select id="list" resultType="com.megacoffee.modules.admin.system.permission.SystemPermissionVO">
       SELECT TA.SEQ, TA.NAME, TA.SORTING
       FROM TB_AUTH TA
       WHERE 1 = 1
@@ -11,7 +11,7 @@
       ORDER BY TA.SORTING ASC
   </select>
 
-  <select id="menus" parameterType="java.lang.Long" resultType="com.megacoffee.modules.system.menu.SystemMenuVO">
+  <select id="menus" parameterType="java.lang.Long" resultType="com.megacoffee.modules.admin.system.menu.SystemMenuVO">
     SELECT 
       TM.SEQ , TM.NAME , TM.PARENT_SEQ 
       , TM.URL , TM.MATCH_URL 

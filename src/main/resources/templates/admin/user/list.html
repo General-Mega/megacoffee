@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>사용자 관리</title>
-    <link rel="stylesheet" href="/assets/css/admin-layout.css">
+    <link rel="stylesheet" href="/assets/admin/css/admin-layout.css">
 </head>
 <body>
-    <div th:replace="layout/header :: header('user')"></div>
+    <div th:replace="admin/layout/header :: header('user')"></div>
 
     <!-- ========== 메인 컨테이너 ========== -->
     <div class="main-container">
-        <aside th:replace="layout/sidebar :: sidebar('userList')"></aside>
+        <aside th:replace="admin/layout/sidebar :: sidebar('userList')"></aside>
 
         <!-- ========== 메인 콘텐츠 영역 ========== -->
         <main class="content">
@@ -99,6 +99,6 @@
         </main>
     </div>
 
-    <div th:replace="layout/footer :: footer"></div>
+    <div th:replace="admin/layout/footer :: footer"></div>
 </body>
 </html>

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.megacoffee.modules.system.menu.SystemMenuService;
-import com.megacoffee.modules.system.menu.SystemMenuVO;
-import com.megacoffee.modules.user.UserService;
-import com.megacoffee.modules.user.UserVO;
+import com.megacoffee.modules.admin.system.menu.SystemMenuService;
+import com.megacoffee.modules.admin.system.menu.SystemMenuVO;
+import com.megacoffee.modules.admin.user.UserService;
+import com.megacoffee.modules.admin.user.UserVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

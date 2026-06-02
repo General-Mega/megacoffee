@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.megacoffee.modules.system.menu.SystemMenuRepository">
+<mapper namespace="com.megacoffee.modules.admin.system.menu.SystemMenuRepository">
 
-  <select id="list" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="com.megacoffee.model.SearchVO">
+  <select id="list" resultType="com.megacoffee.modules.admin.system.menu.SystemMenuVO" parameterType="com.megacoffee.model.SearchVO">
     SELECT 
       SEQ, NAME 
       , PARENT_SEQ , URL , MATCH_URL 
@@ -14,7 +14,7 @@
     ORDER BY `DEPTH` , SORTING
   </select>
 
-  <select id="listByUserSeq" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="com.megacoffee.model.SearchVO">
+  <select id="listByUserSeq" resultType="com.megacoffee.modules.admin.system.menu.SystemMenuVO" parameterType="com.megacoffee.model.SearchVO">
     SELECT 
       TM.SEQ, TM.NAME 
       , TM.PARENT_SEQ , TM.URL , TM.MATCH_URL 
@@ -33,7 +33,7 @@
     ORDER BY TM.`DEPTH` , TM.SORTING
   </select>
 
-  <select id="listByAuthSeq" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="long">
+  <select id="listByAuthSeq" resultType="com.megacoffee.modules.admin.system.menu.SystemMenuVO" parameterType="long">
     SELECT
       M.SEQ, M.NAME
       , M.PARENT_SEQ, M.URL, M.MATCH_URL
@@ -60,7 +60,7 @@
     </foreach>
   </insert>
 
-  <select id="item" resultType="com.megacoffee.modules.system.menu.SystemMenuVO" parameterType="long">
+  <select id="item" resultType="com.megacoffee.modules.admin.system.menu.SystemMenuVO" parameterType="long">
     SELECT 
       SEQ, NAME 
       , PARENT_SEQ , URL , MATCH_URL 
@@ -71,7 +71,7 @@
     WHERE SEQ = #{seq}
   </select>
 
-  <insert id="append" parameterType="com.megacoffee.modules.system.menu.SystemMenuVO">
+  <insert id="append" parameterType="com.megacoffee.modules.admin.system.menu.SystemMenuVO">
     INSERT INTO TB_MENU 
     (
       NAME, PARENT_SEQ, URL, MATCH_URL, DEPTH, SORTING
@@ -84,7 +84,7 @@
     )
   </insert>
 
-  <update id="modify" parameterType="com.megacoffee.modules.system.menu.SystemMenuVO">
+  <update id="modify" parameterType="com.megacoffee.modules.admin.system.menu.SystemMenuVO">
     UPDATE TB_MENU
     SET
       NAME = #{name}

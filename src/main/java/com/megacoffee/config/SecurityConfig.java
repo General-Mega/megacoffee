@@ -26,9 +26,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/login",
-                    "/register",
-                    "/password-reset-request",
+                    "/admin/login",
+                    "/admin/register",
+                    "/admin/password-reset-request",
                     "/assets/**",
                     "/static/**"
                 ).permitAll()
@@ -36,8 +36,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
+                .loginPage("/admin/login")
+                .loginProcessingUrl("/admin/login")
                 // .defaultSuccessUrl("/", true)
                 // .failureUrl("/login?error=true")
                 .successHandler(successHandler)
@@ -45,12 +45,12 @@ public class SecurityConfig {
                 .permitAll()
             )
             .rememberMe(rememberMe -> rememberMe
-                .rememberMeParameter("remember-me")
+                .rememberMeParameter("/admin/remember-me")
                 .tokenValiditySeconds(24 * 60 * 60)
             )
             .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
+                .logoutUrl("/admin/logout")
+                .logoutSuccessUrl("/admin/login?logout=true")
                 .invalidateHttpSession(true)
                 //.deleteCookies("JSESSIONID", "remember-me")
                 .permitAll()

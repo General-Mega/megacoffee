@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>출퇴근 관리</title>
-    <link rel="stylesheet" href="/assets/css/admin-layout.css">
+    <link rel="stylesheet" href="/assets/admin/css/admin-layout.css">
     <style>
         .date-filter {
             display: flex;
@@ -44,11 +44,11 @@
     </style>
 </head>
 <body>
-    <div th:replace="layout/header :: header('member')"></div>
+    <div th:replace="admin/layout/header :: header('member')"></div>
 
     <!-- ========== 메인 컨테이너 ========== -->
     <div class="main-container">
-        <aside th:replace="layout/sidebar :: sidebar('memberCommute')"></aside>
+        <aside th:replace="admin/layout/sidebar :: sidebar('memberCommute')"></aside>
 
         <!-- ========== 메인 콘텐츠 영역 ========== -->
         <main class="content">
@@ -140,6 +140,6 @@
         </main>
     </div>
 
-    <div th:replace="layout/footer :: footer"></div>
+    <div th:replace="admin/layout/footer :: footer"></div>
 </body>
 </html>

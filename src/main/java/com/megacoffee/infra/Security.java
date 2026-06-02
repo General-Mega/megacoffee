@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.megacoffee.modules.user.UserVO;
+import com.megacoffee.modules.admin.user.UserVO;
 import com.megacoffee.security.CustomUserDetails;
 
 import jakarta.servlet.http.HttpServletRequest;
