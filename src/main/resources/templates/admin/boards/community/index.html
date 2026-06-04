@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{layout/head :: head('게시판 > ' + ${boardType.description})}"></th:block>
-    <script src="/assets/admin/js/boards/board.js"></script>
+    <th:block th:replace="~{/admin/layout/head :: head('게시판 > ' + ${boardType.description})}"></th:block>
+    <script src="/admin/js/boards/board.js"></script>
 </head>
 <body class="is-preload">
-    <div th:replace="~{layout/header :: header('boards')}"></div>
+    <div th:replace="~{/admin/layout/header :: header('boards')}"></div>
 
     <div class="main-container">
-        <aside th:replace="~{layout/sidebar :: sidebar('boards-' + ${boardType.name().toLowerCase()})}"></aside>
+        <aside th:replace="~{/admin/layout/sidebar :: sidebar('boards-' + ${boardType.name().toLowerCase()})}"></aside>
 
         <main class="content">
             <div class="content-header">
@@ -61,6 +61,6 @@
     </div>
 
     <input type="hidden" id="__boardName" th:value="${boardType.name().toLowerCase()}" />
-    <div th:replace="~{layout/footer :: footer}"></div>
+    <div th:replace="~{/admin/layout/footer :: footer}"></div>
 </body>
 </html>

@@ -17,7 +17,7 @@
   </insert>
 
   <select id="checkCommute" statementType="CALLABLE" parameterType="com.megacoffee.modules.web.member.CommuteVO">
-    { CALL test.PROC_APPEND_COMMUTE(
+    { CALL test.PROC_APPEND_COMMUTE_NEW(
         #{headerDetails, mode=IN, jdbcType=VARCHAR},
         #{macAddress, mode=IN, jdbcType=VARCHAR},
         #{os, mode=IN, jdbcType=VARCHAR},

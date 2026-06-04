@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="admin/layout/head :: head('시스템 > 사용자 관리')"></th:block>
-    <script src="/admin/js/system/user.js"></script>
+    <th:block th:replace="admin/layout/head :: head('일정 관리')"></th:block>
+    <script src="/admin/js/calendar.js"></script>
 </head>
 <body>
-    <div th:replace="admin/layout/header :: header('system')"></div>
+    <div th:replace="admin/layout/header :: header('calendar')"></div>
 
     <!-- ========== 메인 컨테이너 ========== -->
     <div class="main-container">
-        <aside th:replace="admin/layout/sidebar :: sidebar('system-user')"/>
+        <aside th:replace="admin/layout/sidebar :: sidebar('calendar')"/>
 
         <!-- ========== 메인 콘텐츠 영역 ========== -->
         <main class="content">
             <div class="content-header">
-                <h1>사용자 관리</h1>
-                <p>시스템 사용자를 검색, 등록, 수정, 삭제할 수 있습니다.</p>
+                <h1>일정 관리</h1>
+                <p>일정을 검색, 등록, 수정, 삭제할 수 있습니다.</p>
             </div>
             
             <div class="search-section">

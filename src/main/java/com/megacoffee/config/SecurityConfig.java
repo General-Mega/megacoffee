@@ -29,8 +29,9 @@ public class SecurityConfig {
                     "/admin/login",
                     "/admin/register",
                     "/admin/password-reset-request",
-                    "/assets/**",
-                    "/static/**"
+                    "/admin/js/**",
+                    "/admin/css/**",
+                    "/admin/images/**"
                 ).permitAll()
                 .requestMatchers("/members/**").authenticated()
                 .anyRequest().authenticated()
