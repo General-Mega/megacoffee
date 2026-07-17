@@ -6,18 +6,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.megacoffee.model.ResultVO;
 import com.megacoffee.modules.admin.user.UserService;
 import com.megacoffee.modules.admin.user.UserVO;
+import com.megacoffee.infra.Security;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -28,6 +34,9 @@ public class AdminController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     /**
      * 로그인 페이지
@@ -98,6 +107,39 @@ public class AdminController {
         return mav;
     }
 
+
+    /**
+     * 아이디 중복 확인
+     * @param user
+     * @return
+     */
+    @PostMapping("/check-id")
+    public @ResponseBody ResultVO checkId(@RequestBody UserVO user) {
+
+        String userId = user.getUserId();
+
+        if(userId == null || userId.trim().isEmpty()) {
+            ResultVO result = new ResultVO();
+            result.setCode(400);
+            result.setMessage("아이디를 입력해 주세요.");
+            return result;
+        }
+
+        UserVO item = userService.itemByUserID(userId);
+
+        if(item == null){
+            ResultVO result = new ResultVO();
+            result.setCode(200);
+            result.setMessage("사용 가능한 아이디입니다.");
+            return result;
+        } else {
+            ResultVO result = new ResultVO();
+            result.setCode(409);
+            result.setMessage("이미 존재하는 아이디입니다. 다른 아이디를 사용해 주세요.");
+            return result;
+        }
+    }
+
     /**
      * 사용자 등록 페이지
      */
@@ -110,26 +152,45 @@ public class AdminController {
         }
         return "admin/auth/register";
     }
+    
 
     /**
      * 사용자 등록 처리
      */
     @PostMapping("/register")
-    public String registerUser(@RequestParam("username") String username,
-            @RequestParam("password") String password,
-            RedirectAttributes redirectAttributes) {
-        UserVO user = new UserVO();
-        user.setUserId(username);
-        user.setPassword(passwordEncoder.encode(password));
+    public @ResponseBody ResultVO registerUser(@RequestBody UserVO user) {
+        String userId = user.getUserId();
+        String password = user.getPassword();
 
-        boolean registered = userService.append(user);
-        if (!registered) {
-            redirectAttributes.addAttribute("error", "true");
-            return "redirect:/register";
+        UserVO param = new UserVO();
+        param.setUserId(userId);
+        param.setPassword(passwordEncoder.encode(password));
+
+        boolean registered = userService.append(param);
+        if (registered) {
+            try {
+                Security.login(userId, password, authenticationManager);
+            } catch (Exception ex) {
+                ResultVO result = new ResultVO();
+                result.setCode(500);
+                result.setMessage("사용자 등록은 완료되었으나 자동 로그인에 실패했습니다. 로그인 후 이용해 주세요.");
+                return result;
+            }
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("redirectUrl", "/admin/dashboard");
+
+            ResultVO result = new ResultVO();
+            result.setCode(200);
+            result.setMessage("사용자 등록이 완료되었습니다.");
+            result.setData(data);
+            return result;
+        } else {
+            ResultVO result = new ResultVO();
+            result.setCode(500);
+            result.setMessage("사용자 등록 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            return result;
         }
-
-        redirectAttributes.addAttribute("registered", "true");
-        return "redirect:/login";
     }
 
     /**
