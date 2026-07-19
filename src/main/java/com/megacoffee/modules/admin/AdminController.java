@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.megacoffee.infra.Security;
 import com.megacoffee.model.ResultVO;
 import com.megacoffee.modules.admin.user.UserService;
 import com.megacoffee.modules.admin.user.UserVO;
-import com.megacoffee.infra.Security;
 
 
 @Controller
@@ -213,23 +212,28 @@ public class AdminController {
      * 비밀번호 초기화 요청 처리
      */
     @PostMapping("/password-reset-request")
-    public String requestPasswordReset(@RequestParam("username") String username,
-            RedirectAttributes redirectAttributes) {
-        
-        UserVO user = userService.itemByUserID(username);
+    public @ResponseBody ResultVO passwordResetRequest(@RequestBody UserVO param) {
+        String userId = param.getUserId();
+
+        UserVO user = userService.itemByUserID(userId);
+
+        ResultVO result = new ResultVO();
+        result.setCode(200);
+            result.setMessage("비밀번호 초기화 요청이 접수되었습니다. 관리자가 처리합니다.");
+
         if (user == null) {
-            redirectAttributes.addAttribute("error", "true");
-            return "redirect:/password-reset-request";
+            result.setCode(400);
+            result.setMessage("사용자 정보를 확인할 수 없습니다.");
+            return result;
         } 
 
         Long seq = user.getSeq();
-        boolean updated = userService.setPasswordReset(seq);
-        if (!updated) {
-            redirectAttributes.addAttribute("error", "true");
-            return "redirect:/password-reset-request";
+        boolean resetRequested = userService.setPasswordReset(seq);
+        if(!resetRequested) {
+            result.setCode(500);
+            result.setMessage("비밀번호 초기화 요청 중 오류가 발생했습니다. 다시 시도해 주세요.");
         }
 
-        redirectAttributes.addAttribute("success", "true");
-        return "redirect:/admin/login";
+        return result;
     }
 }

@@ -19,10 +19,14 @@ function doPost(url, data, callback, errorCallback) {
 }
 
 function doPostForm(url, data, callback){
+    const isFormData = data instanceof FormData;
+
     $.ajax({
         url: url,
         type: 'POST',
         data: data,
+        processData: !isFormData,
+        contentType: isFormData ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
             callback(response);
         },
@@ -102,4 +106,61 @@ function nvl(value, defaultValue){
     else{
         return value;
     }
+}
+
+function showAlert(title, message, callbackOK) {
+    let _container = $("<div class='alert'></div>");
+    let _content = $("<div class='alert-content'></div>");
+    let _title = $("<div class='alert-title'><h2>" + title + "</h2></div>");
+    let _message = $("<div class='alert-message'><p>" + message + "</p></div>");
+    let _buttons = $("<div class='alert-buttons'></div>");
+    let _okButton = $("<button type='button' id='__alert-ok'>확인</button>");
+
+    _buttons.append(_okButton);
+    _content.append(_title);
+    _content.append(_message);
+    _content.append(_buttons);
+    _container.append(_content);
+
+    $(document.body).append(_container);
+
+    _okButton.click(function() {
+        if (callbackOK && typeof callbackOK === 'function') {
+            callbackOK();
+        }
+        _container.remove();
+    });
+}
+
+function showConfirm(title, message, callbackOK, callbackCancel) {
+    let _container = $("<div class='alert'></div>");
+    let _content = $("<div class='alert-content'></div>");
+    let _title = $("<div class='alert-title'><h2>" + title + "</h2></div>");
+    let _message = $("<div class='alert-message'><p>" + message + "</p></div>");
+    let _buttons = $("<div class='alert-buttons'></div>");
+    let _okButton = $("<button type='button' id='__alert-ok'>확인</button>");
+    let _cancelButton = $("<button class='cancel' type='button' id='__alert-cancel'>취소</button>");
+
+    _buttons.append(_okButton);
+    _buttons.append(_cancelButton);
+    _content.append(_title);
+    _content.append(_message);
+    _content.append(_buttons);
+    _container.append(_content);
+
+    $(document.body).append(_container);
+
+    _okButton.click(function() {
+        if (callbackOK && typeof callbackOK === 'function') {
+            callbackOK();
+        }
+        _container.remove();
+    });
+
+    _cancelButton.click(function() {
+        if (callbackCancel && typeof callbackCancel === 'function') {
+            callbackCancel();
+        }
+        _container.remove();
+    });
 }

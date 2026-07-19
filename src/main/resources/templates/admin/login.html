@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>로그인</title>
     <link rel="stylesheet" href="/admin/css/login.css">
+    <link rel="stylesheet" href="/admin/css/alert-layout.css">
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="/admin/js/common.js"></script></th:block>
     <script src="/admin/js/login.js"></script>
 </head>
@@ -17,15 +19,16 @@
         <label for="__password">비밀번호</label>
         <input id="__password" name="password" type="password" required autocomplete="current-password" />
         <div style="margin-bottom:16px; display:flex; align-items:center; visibility:visible;">
-            <input id="__remember-me" name="remember-me" type="checkbox" checked />
-            <label for="__remember-me" style="margin-left:8px; margin-bottom:0; font-size:14px; cursor:pointer;">아이디와 비밀번호 저장 (24시간)</label>
+            <input id="__remember-me" name="remember-me" type="checkbox" />
+            <label for="__remember-me" style="margin-left:8px; margin-bottom:0; font-size:14px; cursor:pointer;">아이디 저장 (30일)</label>
         </div>
         <button id="__btn_login" type="button">로그인</button>
-        <div class="message" id="message"></div>
+        <div class="message" id="__message"></div>
         <div style="display:flex; gap:12px; margin-top:16px;">
             <button type="button" onclick="window.location.href='/admin/register'" style="flex:1; background:#28a745;">회원가입</button>
             <button type="button" onclick="window.location.href='/admin/password-reset-request'" style="flex:1; background:#f0ad4e;">비밀번호 초기화</button>
         </div>
     </div>
+    
 </body>
 </html>
